@@ -11,7 +11,6 @@ django-import-export==0.5.1
 django-model-utils==2.3.1
 django-multiselectfield==0.1.5
 django-notifications-hq==0.7.0
-django-paginator-rawqueryset==0.1.0
 django-password-reset==0.7
 django-redis==4.3.0
 django-tables2==1.4.2
