@@ -1,2 +1,2 @@
-$ cat runtime.txt
+python-3.6.2
 python-2.7.13
