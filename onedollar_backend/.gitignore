@@ -9,7 +9,6 @@ node_modules
 
 ## Project specific ignore patterns
 ###################################
-settings_local.py
 db.sql
 /media/
 /www/
