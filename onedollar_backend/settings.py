@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'b-3qh07ezr4l2dj@&b$g%xgpaszo!9w*!d9(l-!*!s0hnwyha='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*',]
 
@@ -68,12 +68,18 @@ INSTALLED_APPS = (
 )
 
 CRONJOBS = [
-    ('* * * * *', 'onedollar.models.second_chance_4h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * * * *', 'onedollar.models.second_chance_4h_48h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
     ('*/30 * * * *', 'onedollar.models.before_the_draw_30_min', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
-    ('* * * * *', 'onedollar.models.enter_his_address_after_8h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
-    ('* * * * *', 'onedollar.models.collect_your_cash_4h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
-    ('* * * * *', 'shopapp.models.PaymentCreate',),
-    ('0 0 16 * *', 'shopapp.models.PaymentCreate',),
+    ('* * * * *', 'onedollar.models.enter_his_address_after_8h_48h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * * * *', 'onedollar.models.collect_your_cash_4h_24h', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * * * *', 'onedollar.models.pns_free_daily_cat', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * * * *', 'onedollar.models.pns_spin_cat_uncage', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('0 */4 * * *', 'onedollar.models.pns_uncage_cat_remind', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('0 9 * * *', 'onedollar.models.pns_uncage_cat_remind_after_1day', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * 1 * *', 'shopapp.api.PaymentMerchant', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('0 4 1 * *', 'shopapp.api.Decode', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('* * 16 * * *','shopapp.api.PaymentMerchant', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
+    ('0 4 16 * * *','shopapp.api.Decode', '>> /webapps/onedollar_backend/logs/cron.log 2>&1'),
 ]
 
 CONSTANCE_CONFIG = OrderedDict([ 
@@ -183,7 +189,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'Game Level 8': ('REQUIRE_COINS_8','DISCOUNT_8','DISCOUNT_TIME_8'),
 }
 
-
 FB_FANPAGE_ACCESS_TOKEN = 'EAAJLbDrTBuoBACDJQciJuQff1kYcgMZBoiSaL4wFgqCpGZAMjDbMShhsGHaoaGtxUN'+\
     'ZA0IPJQ0q7iiaRgBQpimXnk252qPlna88vYzbpWrYM9udUhT7SctuCr9ZBDuzGJDbmgY1CnZCB4XqqoZA4LbkWFaEwKEWWYZD'
 
@@ -261,7 +266,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_URL = 'http://localhost:8888/'
+# SITE_URL = 'http://localhost:8888/'
+SITE_URL = 'http://onedollar.giinger.com/'
 
 STATIC_URL = SITE_URL + 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
