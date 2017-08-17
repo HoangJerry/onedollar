@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Payment Statistics</title>
+    </head>
+    <body>
+        <p>
+        Total: 
+        {% for k, v in topups.items %}
+            {{ k }}: {{ v }}
+            {% if not forloop.last %} || {% endif %}
+        {% endfor %}
+        </p>
+
+        <p>
+        Stripe Errors:
+        {% for k, v in errors.items %}
+            {{ k }}: {{ v }}
+            {% if not forloop.last %} || {% endif %}
+        {% endfor %}
+        </p>
+    </body>
+</html>
+

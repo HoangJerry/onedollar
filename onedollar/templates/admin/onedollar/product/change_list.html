@@ -1,0 +1,62 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+<li><a href="#" class="addlink" onclick="addProductFromWish()">Add product from wish.com</a></li>
+{{ block.super }}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+
+<script type="text/javascript">
+var addProductFromWish;
+
+(function($) {
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = $.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    addProductFromWish = function() {
+        var productId = prompt("Please input Wish product ID");
+        if (productId != null && productId != "") {
+            var csrftoken = getCookie('csrftoken');
+            var settings = {
+                url: "/admin/products/create-from-url/",
+                method: "POST",
+                data: {productId:productId,csrfmiddlewaretoken:csrftoken},
+                dataType: "json",
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response && response['url'] != '') {
+                    location.href = response['url'];
+                } else {
+                    alert('Error occurred');
+                }
+            }).error(function () {
+                alert('Error occurred coca');
+            });
+        }
+    }
+})(django.jQuery);
+</script>
+{% endblock %}
+

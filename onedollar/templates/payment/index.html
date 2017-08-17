@@ -1,0 +1,20 @@
+{% extends "payment/layout.html" %}
+{% block content %}
+  <form action="/payment/charge/" method="post">{% csrf_token %}
+    <input type="hidden" name="amount" value="{{ amount }}" />
+    <input type="hidden" name="user" value="{{ user }}" />
+    <input type="hidden" name="description" value="{{ description }}" />
+    <article>
+      <label>
+        <span>Amount is ${{ amount|slice:":-2" }}</span>
+      </label>
+    </article>
+
+    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="{{ description }}"
+            data-amount="{{ amount }}"
+            data-currency="{{ currency }}"
+            data-locale="auto"></script>
+  </form>
+{% endblock %}

@@ -1,0 +1,3 @@
+[submodule "unify_django"]
+	path = unify_django
+	url = git@gitlab.nng.bz:hhh/unify_django.git

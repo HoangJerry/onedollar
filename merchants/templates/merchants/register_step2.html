@@ -1,0 +1,168 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/new_onboarding_page.css' %}">
+{% endblock %}
+
+{% block sub_header_nav %}
+<div id="sub-header-nav" class="navbar navbar-fixed-top sub-header" style="left: 0px;">
+   <div class="navbar-inner">
+      <div class="container-fluid">
+         <div class="pull-left">
+            <ul class="nav">
+            </ul>
+         </div>
+         <div class="pull-right">
+            <ul class="nav">
+               <li id="menu-help" class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Help
+                  <b class="caret"></b></a>
+                  <ul class="dropdown-menu pull-right">
+                     <li>
+                        <a href="{% url "index" %}/policy">
+                        Wish Policies
+                        </a>
+                     </li>
+                     <li>
+                        <a href="{% url "index" %}/faq">
+                        FAQ
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+               <li id="menu-account" class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Account
+                  <b class="caret"></b></a>
+                  <ul class="dropdown-menu pull-right">
+                     <li><a href="{% url "logout" %}">Logout</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="banner-container" style="margin-top: 39px;"></div>
+{% endblock %}
+
+{% block content %}
+<!-- Step 2 -->
+<div id="page-container" class="center">
+  <div id="onboarding-page-content">
+     <div class="onboarding-form">
+        <div class="title"> Add your contact information </div>
+        <form class="form">
+           <div class="row-fluid">
+              <div class="span6 control-group">
+                 <label class="control-label" for="first_name">First Name</label> 
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="first_name" name="first_name" placeholder="First Name" required=""> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+              <div class="span6 control-group">
+                 <label class="control-label" for="last_name">Last Name</label> 
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="last_name" name="last_name" placeholder="Last Name" required=""> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+           <div class="row-fluid">
+              <div class="span12 control-group">
+                 <label class="control-label" for="street_address1"> Street Address </label> 
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="street_address1" name="street1" placeholder="Street Address" required=""> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+           <div class="row-fluid">
+              <div class="span12 control-group">
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="street_address2" name="street2" placeholder="Street Address 2 (optional)"> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+           <div class="row-fluid">
+              <div class="span6 control-group">
+                 <label class="control-label" for="country_code"> Country </label> 
+                 <div class="controls input-append">
+                    <select id="country_code" name="country_id" class="form-control" required="">
+                      <option value="1" selected="selected">Singapore (SGD)</option>
+                      <option value="2">United States (USD)</option>
+                      <option value="3">United Kingdom (GBP)</option>
+                      <option value="5">Australia (AUD)</option>
+                      <option value="6">In Europe (France, Spain, Italy, Ireland...) (EUR)</option>
+                      <option value="7">Canada (CAD)</option>
+                      <option value="8">Phillipines (PHP)</option>
+                      <option value="9">Indonesia (IDR)</option>
+                      <option value="10">Indo USA (USD)</option>
+                    </select>
+                    <span class="add-on"><i class="icon icon-pencil"></i></span> 
+                 </div>
+              </div>
+              <div class="span6 control-group">
+                 <label class="control-label" for="state"> State </label> 
+                 <div id="state-container" class="controls input-append">  <input type="text" class="form-control" value="" id="state" name="province" placeholder="State" required="">  <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+           <div class="row-fluid">
+              <div class="span6 control-group">
+                 <label class="control-label" for="city"> City </label> 
+                 <div id="city-container" class="controls input-append">  <input type="text" class="form-control" value="" id="city" name="city" placeholder="City" required="">  <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+              <div class="span6 control-group">
+                 <label class="control-label" for="zipcode"> Zipcode/Postal Code </label> 
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="zipcode" name="postal_code" placeholder="Zipcode/Postal Code" required=""> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+           <div class="row-fluid">
+              <div class="span6 control-group">
+                 <label class="control-label" for="phone_country"> Phone Number </label> 
+                 <div class="controls input-append"> <input type="text" class="form-control" value="" id="phone" name="phone" placeholder="01234567890" required=""> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+              </div>
+           </div>
+            {% csrf_token %}
+            <hr>
+            <div class="buttons clearfix">
+               <div class="pull-left"> </div>
+              <div class="pull-right">
+                <input type="submit" id="next-btn" class="flat-orange-btn onboarding-btn" value="Next">
+                <div class="onboarding-btn loading" style="display: none;"></div>
+              </div>
+            </div>
+        </form>
+
+     </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block global_js %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".form").submit(function() {
+      $('#next-btn').prop('type', 'hidden');
+      $('.loading').css('display','block');
+
+      $.ajax({
+        type: "PATCH",
+        beforeSend: function(request) {
+          request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+        },
+        url: '/api/users/'+localStorage.getItem('id_user')+'/',
+        data: $(".form").serialize(),
+        dataType: "json",
+        success: function (data) {  
+          $(location).attr('href', '{% url "register_step3" %}');
+        },
+        error: function(jqXHR, text, error){
+          alert('Error!');
+          $('#next-btn').prop('type', 'submit');
+          $('.loading').css('display','none');
+        }
+      });      
+
+      return false;
+    });
+  });
+</script>
+
+
+{% endblock %}

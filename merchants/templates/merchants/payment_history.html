@@ -1,0 +1,229 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/transactions_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="transactions-page">
+  <div class="row-fluid">
+    <span class="span12">
+      <legend>History - <span id="payment-history-count"></span> Payments</legend>
+      <div class="alert alert-info" id="outputDayTime">
+      </div>
+<!--       <div id="payment-history-list">
+        <p class="no-results">You haven't received any payments from Wish yet.</p>
+      </div> -->
+    </span>
+  </div>
+</div>
+
+<div id="content">
+  <ul class="nav nav-tabs">
+    <li id="upcoming-view" class="active"> <a href="#"></a> </li>
+    <li id="pending-view" class=""> <a href="#"></a> </li>
+    <li id="complete-view" class=""> <a href="#"></a> </li>
+  </ul>
+  <div class="row-fluid active-content2" id="aggregate-table" style="display: block;">
+    <table class="table table-condensed table-hover table-bordered merch-table" id="table-transaction">
+      <thead>
+        
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div class="clearfix transactions_detail" style="display: none;">
+    <div class="subtitle clearfix">
+      <legend id="transactions-detail--header"><span></span>  </legend>
+    </div>
+    <div id="product-list">
+      <div>
+        <table class="table table-condensed table-hover table-bordered merch-table" id="table-order">
+          <thead>
+            <tr style="font-weight: bold; background-color: #f1f1f1">
+              <th> Order date </th>
+              <th>
+                Order ID / Transaction 
+              </th>
+              <th> <span title="Name of product as displayed to users" rel="tooltip">Product Name</span> </th>
+              <th>
+                To be paid ($)
+              </th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+
+  $.ajax({
+    type: "GET",
+    beforeSend: function(request) {
+      request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+    },
+    url: '/api/shop/payment/me/status/',
+    dataType: "json",
+    success: function (data) {
+      $('#upcoming-view a').html('Upcoming ('+data.upcoming+')');
+      $('#pending-view a').html('Pending ('+data.pending+')');
+      $('#complete-view a').html('Completed ('+data.completed+')');
+    },
+    error: function(jqXHR, text, error){
+    }
+  });
+
+  function callAjaxTransaction(urlApi){
+    $('#loading-overlay').css('visibility', 'visible');
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: urlApi,
+      dataType: "json",
+      success: function (data) {
+        $('#loading-overlay').css('visibility', 'hidden');
+        $('table#table-transaction tbody').find("tr").remove(); // Remove all records
+        $('table#table-transaction thead').html("");
+        showTransaction(data.results);
+      },
+      error: function(jqXHR, text, error){
+      }
+    });
+  }
+
+  function callAjaxOrderViaTransaction(urlApi){
+    $('#loading-overlay').css('visibility', 'visible');
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: urlApi,
+      dataType: "json",
+      success: function (data) {
+        $('#loading-overlay').css('visibility', 'hidden');
+        $('table#table-order tbody').find("tr").remove(); // Remove all records
+        showOrder(data.results);
+      },
+      error: function(jqXHR, text, error){
+      }
+    });
+  }
+
+  callAjaxTransaction('/api/shop/payment/me/?status=0');
+
+  function showTransaction(data){
+    var td_transaction_id = "";
+    try {if (data[0].status == "Completed") {
+        td_transaction_id = "<td> Transaction ID </td>";
+    }} catch(e) {}
+    
+    var tmplTr = `
+      <tr style="font-weight: bold; background-color: #f1f1f1">
+        <td> Date </td>
+        <td> Total Amount </td>
+        ${td_transaction_id}
+        <td> Action </td>
+      </tr>
+    `;
+    $('table#table-transaction thead').html(tmplTr);
+    data.reverse().map(function(transaction, key){  
+      var date = transaction.payment_history;
+      var total_amount = (transaction.total_amount*1.0).toFixed(2);
+      var td_transaction_id_value = "";
+      if (td_transaction_id != ""){
+        td_transaction_id_value = "<td> "+transaction.transaction_id+" </td>";
+      }
+      var tmpl = `
+        <tr>
+          <td> ${date} </td>
+          <td> $${total_amount} </td>
+          ${td_transaction_id_value}
+          <td>
+            <a class="view-product-breakdown" onclick="detailTransaction('${date}')"> Transaction Detail</a>
+          </td>
+        </tr>
+      `;
+      $('table#table-transaction tbody').append(tmpl);
+    });
+  }
+
+  function showOrder(data){
+    data.reverse().map(function(order, key){  
+      var creation_date = order.creation_date.replace('T', ' ').replace('Z', '');
+      var total_amount = (order.amount*0.8).toFixed(2);
+      var id = order.id;
+      var transaction_id = order.transaction_id;
+      var delivery_status_display = order.delivery_status_display;
+      var product_name = order.product_obj.title;
+      var tmpl = `
+        <tr>
+          <td> ${creation_date} </td>
+          <td> <a href="{% url "order_history"%}?id=${id}">${id}/${transaction_id}</a> </td>
+          <td> ${product_name} </td>
+          <td> $${total_amount} </td>
+          <td> ${delivery_status_display} </td>
+        </tr>
+      `;
+      $('table#table-order tbody').append(tmpl);
+    });
+  }
+
+  // View transaction detail
+  function detailTransaction(datePay){
+    $('.transactions_detail').css('display', 'block');
+    $('#transactions-detail--header span').html(`Transaction Detail - (${datePay})`);
+    callAjaxOrderViaTransaction('/api/shop/payment/me/detail/?date=' + datePay);
+  }
+
+$(document).ready(function(){
+  // Show next scheduled payment
+  var d = new Date();
+  var day = d.getDate();
+  var monthNext = d.getMonth()+1;
+  if (day<=16){day = '16';} else {day = '01';monthNext = d.getMonth()+2;};
+  var outputDayTime = day + '-' + (monthNext<10 ? '0' : '') + monthNext + '-' + d.getFullYear();
+  $('#outputDayTime').html(`Your next scheduled payment is: ${outputDayTime} UTC`);
+
+  // Event click nav-tabs
+  $('ul.nav-tabs li').click(function(){
+    $('ul.nav-tabs li').removeClass('active');
+    $(this).addClass('active');
+    if ($(this).context.id=="upcoming-view"){
+      $('.transactions_detail').css('display', 'none');
+      callAjaxTransaction('/api/shop/payment/me/?status=0');
+    }
+    if ($(this).context.id=="pending-view"){
+      $('.transactions_detail').css('display', 'none');
+      callAjaxTransaction('/api/shop/payment/me/?status=10');
+    }
+    if ($(this).context.id=="complete-view"){
+      $('.transactions_detail').css('display', 'none');
+      callAjaxTransaction('/api/shop/payment/me/?status=20');
+    }
+  });
+
+
+});
+
+
+</script>
+{% endblock %}

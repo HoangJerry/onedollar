@@ -1,0 +1,129 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/account_settings.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+    <div id="account-settings-page">
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+                <li><a href="{% url "general_information" %}">General Information</a></li>
+                <li class="active"><a href="{% url "display_settings" %}" data-toggle="tab">Display Settings</a></li>
+                <li><a href="{% url "change_username" %}">Change Username</a></li>
+                <li><a href="{% url "change_password" %}">Change Password</a></li>
+                <li><a href="{% url "change_email" %}">Change Email</a></li>
+                <li><a href="{% url "email_preferences" %}">Email Preferences</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="display-settings" class="tab-pane active">
+                <div>
+                  <!-- NOTE: if you update this, make sure the account setting page in onboarding flow still works --> 
+                  <div class="form-horizontal">
+                    <div class="control-group">
+                      <label class="control-label" for="display-name">Display Name</label> 
+                      <div class="controls"> <input type="text" class="input-block-level" name="display_name" id="display-name" disabled=""> </div>
+                      <div class="controls"> </div>
+                    </div>
+                    <div class="control-group">
+                      <label class="control-label" for="display-name">Display Picture</label> 
+                      <div class="controls">
+                        <div class="clearfix img-and-desc">
+                          <div class="img-wrapper pull-left">  <img class="display-picture" src="{% static 'merchants/images/default_dp.png' %}">  </div>
+                          <div class="img-desc pull-right"> Your image must be a square (same width and height) and should be 400px by 400px or larger. </div>
+                        </div>
+                        <div class="img-controls">
+                          <div class="computer img-input">
+                            <div class="input-prepend input-block-level">
+                              <button class="btn fake-file-upload"> Select Image From Computer </button>
+                            </div>
+                            <form class="lvntruong" enctype="multipart/form-data">
+                              <input class="real-file-upload" maxlength="10000000000" name="avatar" type="file" accept=".jpg,.jpeg,.gif,.png">
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="control-group clearfix">
+                      <div id="display-settings-errorbox" class="alert alert-error hide"> </div>
+                      <button type="button" class="pull-right btn btn-primary submit-btn"> Update </button> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+
+  function UserFromLib(user){
+    $('#display-name').val(user.username);
+    if (user.avatar != null){
+      $('.display-picture').attr('src', user.avatar);
+    }
+  }
+
+$(document).ready(function(){
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('.display-picture').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $(".real-file-upload").change(function(){
+      readURL(this);
+  });
+
+  $(".submit-btn").click(function() {
+    var formData = new FormData();
+    formData.append('avatar', $('.lvntruong')[0][0].files[0]);
+
+    console.log(formData);
+
+    $.ajax({
+      type: "PATCH",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/users/'+localStorage.getItem('id_user')+'/',
+      data: formData,       
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,  // tell jQuery not to set contentType
+      dataType: "json",
+      success: function (data) {  
+        localStorage.setItem('user_global', Base64.encode(JSON.stringify(data)));
+        $(location).attr('href', '{% url "display_settings"%}');
+      },
+      error: function(jqXHR, text, error){
+        $(location).attr('href', '{% url "display_settings"%}');
+        // alert('Nothing change!');
+      }
+    });      
+    return false;
+  });
+
+  $('.fake-file-upload').click(function(){
+    $('.real-file-upload').click();
+  });
+  
+});
+</script>
+{% endblock %}

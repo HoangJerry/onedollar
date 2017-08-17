@@ -1,0 +1,116 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/account_settings.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+    <div id="account-settings-page">
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="{% url "general_information" %}" data-toggle="tab">General Information</a></li>
+                <li><a href="{% url "display_settings" %}">Display Settings</a></li>
+                <li><a href="{% url "change_username" %}">Change Username</a></li>
+                <li><a href="{% url "change_password" %}">Change Password</a></li>
+                <li><a href="{% url "change_email" %}">Change Email</a></li>
+                <li><a href="{% url "email_preferences" %}">Email Preferences</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="general-information" class="tab-pane active">
+              <form class="form-horizontal">
+                <div class="control-group">
+                  <label class="control-label">Merchant Id</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" disabled="">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Account Manager</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" value="admin@onedollarapp.biz" disabled="">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Username</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" disabled="">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Email</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" disabled="">
+                  </div>
+                </div>
+<!--                 <div class="control-group">
+                  <label class="control-label">Rev Share</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" value="15.0%" disabled="">
+                  </div> 
+                </div> -->
+                <div class="control-group">
+                  <label class="control-label" for="first-name">First Name</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" name="first_name" id="first-name" required="">
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label" for="last-name">Last Name</label>
+                  <div class="controls">
+                    <input type="text" class="input-block-level" name="last_name" id="last-name" required="">
+                  </div>
+                </div>
+                <div class="control-group clearfix">
+                  <button type="submit" class="pull-right btn btn-primary submit-btn">
+                  Update
+                  </button>
+                </div>
+              </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+  function UserFromLib(user){
+    $('.input-block-level:eq(0)').val(user.id);
+    $('.input-block-level:eq(2)').val(user.username);
+    $('.input-block-level:eq(3)').val(user.email);
+    $('.input-block-level:eq(4)').val(user.first_name);
+    $('.input-block-level:eq(5)').val(user.last_name);
+  }
+$(document).ready(function(){
+  $(".form-horizontal").submit(function() {
+    $.ajax({
+      type: "PATCH",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/users/'+localStorage.getItem('id_user')+'/',
+      data: $(".form-horizontal").serialize(),
+      dataType: "json",
+      success: function (data) {  
+        localStorage.setItem('user_global', Base64.encode(JSON.stringify(data)));
+        alert('Success!');
+      },
+      error: function(jqXHR, text, error){
+        alert('Error!');
+      }
+    });      
+    return false;
+  });
+});
+</script>
+{% endblock %}

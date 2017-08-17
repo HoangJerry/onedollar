@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Share FB</title>
+</head>
+<body>
+
+<div id="bodyarea">
+    <div class="share_fb">Share on facebook</div>
+</div>
+
+<script>
+  //window.fbAsyncInit = function() {
+  //  FB.init({
+  //    appId      : '731796766922472',
+  //    xfbml      : true,
+  //    version    : 'v2.5'
+  //  });
+  //};
+
+  //(function(d, s, id){
+  //   var js, fjs = d.getElementsByTagName(s)[0];
+  //   if (d.getElementById(id)) {return;}
+  //   js = d.createElement(s); js.id = id;
+  //   js.src = "//connect.facebook.net/en_US/sdk.js";
+  //   fjs.parentNode.insertBefore(js, fjs);
+  // }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div>
+
+<h3>Sharing Links</h3>
+
+<button class="shareBtn" data-href="" class="btn btn-success clearfix">Share Dialog popup</button>
+<div id="resultTxt"></div>
+<a href="https://m.facebook.com/v2.1/dialog/share?app_id=187288694643718&display=touch&e2e=%7B%7D&href=http%3A%2F%2Ftechcrunch.com%2F2015%2F11%2F23%2Fandroid-studio-2-0-with-improved-android-emulator-and-instant-run%2F&locale=en_US&next=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter%2FTlA_zCeMkxl.js%3Fversion%3D41%23cb%3Df33471fe74%26domain%3Dtechcrunch.com%26origin%3Dhttp%253A%252F%252Ftechcrunch.com%252Ff11ab9202%26relation%3Dopener%26frame%3Df28fe78e7%26result%3D%2522xxRESULTTOKENxx%2522&sdk=joey&version=v2.1" target="_blank">Click me!</a>
+<script src='https://code.jquery.com/jquery-2.1.4.min.js'></script>
+<script>
+$("#bodyarea").on('click', '.share_fb', function(event) {
+    event.preventDefault();
+    var that = $(this);
+    var post = that.parents('article.post-area');
+    $.ajaxSetup({ cache: true });
+        $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+        FB.init({
+          appId: '731796766922472',
+          version: 'v2.3' // or v2.0, v2.1, v2.0
+        });
+        FB.ui({
+            method: 'share',
+            title: 'Title Goes here',
+            description: 'Description Goes here. Description Goes here. Description Goes here. Description Goes here. Description Goes here. ',
+            href: 'https://developers.facebook.com/docs/',
+          },
+          function(response) {
+            if (response && !response.error_code) {
+              alert('Posting completed.');
+            } else {
+              alert('Error while posting.');
+            }
+        });
+  });
+});
+//var _display = 'touch';
+//$('#resultTxt').html(_display);
+//    $('.shareBtn').click(function() {
+//      FB.ui({
+//            method: 'share',
+//            href: 'http://techcrunch.com/2015/11/23/android-studio-2-0-with-improved-android-emulator-and-instant-run/',
+//            display: _display
+//          }, function(response){
+//                console.log(response);
+//                $('#resultTxt').html(response);
+//          });
+//            });
+</script>
+</body>
+</html>
+

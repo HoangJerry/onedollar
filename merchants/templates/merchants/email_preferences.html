@@ -1,0 +1,148 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/account_settings.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+    <div id="account-settings-page">
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+                <li><a href="{% url "general_information" %}">General Information</a></li>
+                <li><a href="{% url "display_settings" %}">Display Settings</a></li>
+                <li><a href="{% url "change_username" %}">Change Username</a></li>
+                <li><a href="{% url "change_password" %}">Change Password</a></li>
+                <li><a href="{% url "change_email" %}">Change Email</a></li>
+                <li class="active"><a href="{% url "email_preferences" %}" data-toggle="tab">Email Preferences</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="email-preferences" class="tab-pane active">
+                    <form class="form-horizontal">
+                        <input type="radio" id="email-all" name="do_not_send_me_any_of_these_emails" value="0">
+                        <label class="checkbox-label" for="email-all">
+                        <strong>Send me e-mails for the following reasons:</strong>
+                        </label>
+                        <ul id="email-preference-checkboxes" class="checkbox-label-grey">
+                            <li>
+                            <input type="checkbox" id="receive_an_order" name="receive_an_order" value="1" class="checkbox">
+                                <label class="checkbox-label" for="setting-1">
+                                Receive an order
+                                </label>
+                            </li>
+                            <li><input type="checkbox" id="approve_a_new_product" name="approve_a_new_product" value="1" class="checkbox">
+                                <label class="checkbox-label" for="setting-2">
+                                Approve a new product
+                                </label>
+                            </li>
+                            <li><input type="checkbox" id="received_a_payment_product" name="received_a_payment_product" value="1" class="checkbox">
+                                <label class="checkbox-label" for="setting-3">
+                                Received a payment product
+                                </label>
+                            </li>
+                        </ul>
+                        <input type="radio" id="email-none" name="do_not_send_me_any_of_these_emails" value="1">
+                        <label class="checkbox-label" for="email-none">
+                        <strong>Do not send me any of these e-mails</strong>
+                        </label>
+                        <br>
+                        <button type="submit" class="pull-right btn btn-primary submit-btn">
+                        Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+$.ajax({
+  type: "GET",
+  beforeSend: function(request) {
+  request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+  },
+  url: '/api/merchants/email/status/',
+  dataType: "json",
+  success: function (data) {  
+      console.log(data);
+      if (data.results[0].approve_a_new_product){
+          $('#approve_a_new_product').prop('checked','checked');
+      } else {
+          $('#approve_a_new_product').prop('checked','');
+      }
+      if (data.results[0].receive_an_order){
+          $('#receive_an_order').prop('checked','checked');
+      } else {
+          $('#receive_an_order').prop('checked','');
+      }
+      if (data.results[0].received_a_payment_product){
+          $('#received_a_payment_product').prop('checked','checked');
+      } else {
+          $('#received_a_payment_product').prop('checked','');
+      }
+      if (data.results[0].do_not_send_me_any_of_these_emails){
+          $('#email-none').prop('checked','checked');
+          $('#email-all').prop('checked','');
+      } else {
+          $('#email-none').prop('checked','');
+          $('#email-all').prop('checked','checked');
+      }
+  },
+  error: function(jqXHR, text, error){
+     alert('Error!');
+  }
+});
+
+$(document).ready(function(){
+
+  $(".form-horizontal").submit(function() {
+    $(".form-horizontal").find('input[type="checkbox"]').each( function () {
+        var checkbox_this = $(this);
+        if( checkbox_this.is(":checked") == true ) {
+            checkbox_this.attr('value','1');
+        } else {
+            checkbox_this.prop('checked',true);
+            checkbox_this.attr('value','0');
+        }
+    })
+
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/merchants/email/status/',
+      data: $(".form-horizontal").serialize(),
+      dataType: "json",
+      success: function (data) {
+        if (data.status == 1){
+          location.reload();
+        } else {
+          if (data.error){
+            // alert("Username exist");
+          } else {
+            // alert("Wrong password!");
+          }
+        }
+      },
+      error: function(jqXHR, text, error){
+        // location.reload();
+      }
+    });      
+    return false;
+  });
+
+});
+</script>
+{% endblock %}

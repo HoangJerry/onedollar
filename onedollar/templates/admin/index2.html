@@ -1,0 +1,70 @@
+{% extends 'admin/index.html' %}
+{% block extrahead %}
+{{ block.super }}
+<script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(function() {
+        $('a.section').attr('href', '#');
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "/api/users/me/badges/",
+            "method": "GET",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": "Token {{ user.token }}",
+            }
+        }
+
+        settings['url'] = '/api/backend/stats/';
+
+        $.ajax(settings).done(function (response) {
+            var $a = $('a').each(function(index) { 
+                var $this = $(this);
+                if ($(this).text() === "Transactions") {
+                    $this.append(' ($'+response.sum_topups+' top up)');
+                } else if ($(this).text() === "Users") {
+                    $this.append(' ('+response.total+'/+'+response.today+' today)');
+                } else if ($(this).text() === "Sold products") {
+                    var unreadCount = response.chat;
+                    $this.append(' ('+unreadCount+' unread messages)');
+                }
+            });
+
+            $('.app-constance.module table')
+                .append('<tbody><tr class="model-config">'+
+                            '<th scope="row"><a href="/admin/constance/config/?gameconfig">Config Game</a></th>'+
+                            '<td>&nbsp;</td>'+
+                            '<td><a href="/admin/constance/config/?gameconfig" class="changelink">Change</a></td>'+
+                            '</tr>'+
+                        '</tbody>')
+
+            $('.app-onedollar tbody').append('<tr class="model-onedollaruser"><th scope="row"><a href="/admin/onedollar/onedollaruser/?is_flagged__exact=1">Users Flagged ('+response.totalUserFlagged+')</a></th></tr>');
+        });
+
+        settings['url'] = '/api/shop/backend/stats/';
+
+        $.ajax(settings).done(function (response) {
+            var $a = $('a').each(function(index) { 
+                var $this = $(this);
+                if ($(this).text() === "Orders") {
+                    $this.append(' ('+response.count_orders+' / $'+response.sum_orders+')');
+                } else if ($(this).text() === "Products") {
+                    $this.append(' ('+response.count_products+')');
+                }
+        
+            });
+        // });
+
+        // settings['url'] = '/api/backend/stats/';
+
+        // $.ajax(settings).done(function (response) {
+            $('.app-shopapp.module table tbody .model-product th a').html('<a href="shopapp/product" title="">Products</a> (<a href="shopapp/product/?status__exact=20">'+response.count_pending+' pending</a> '+'/<a href="shopapp/product/?status__in=10,30"> Live '+ response.count_products+'</a>)');
+        });
+    });
+</script>
+{% endblock %}
+
+

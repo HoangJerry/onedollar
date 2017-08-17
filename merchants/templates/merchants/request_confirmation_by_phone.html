@@ -1,0 +1,194 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/request_confirmation_phone_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+   <div id="page-wrapper" class="fixed-width-small">
+      <div id="display-verify-content" class="center">
+         <h2>Confirm your mobile phone number</h2>
+         <div class="section call-me-now">
+            <div class="action">
+               <div id="explain-text">
+                  <p>
+                     We need to confirm the phone number you entered.
+                  </p>
+               </div>
+               <form class="form form-inline">
+                  <div class="control-group">
+                     <div id="phone-number-input">
+                        <label class="control-label" for="phone-number">Your phone number:</label>
+                        <input required type="text" id="phone-number" name="phone" value="">
+                     </div>
+                     <div class="help-text">
+                        <p>Please include the complete phone number with the country code (including a leading +).</p>
+                        <p>Example (US): +12345678910</p>
+                        <p>Example (China): +8613912345678</p>
+                        <p>Example (China): +862165142543</p>
+                     </div>
+                  </div>
+               </form>
+               <hr>
+               <div id="verify-option-select">
+                  <ul id="verify-options">
+                     <li>
+                        <input type="radio" class="radio" id="sms-verify-option" name="verify-options" value="sms" checked="">
+                        <label for="sms-verify-option" class="option-label">
+                        Verify by SMS code
+                        </label>
+                     </li>
+                  </ul>
+               </div>
+               <br>
+               <div id="sms-verify">
+                  <p>
+                     <a id="send-sms-code" href="">Click here</a>
+                     to receive an SMS.
+                     It may take a few minutes for the code to arrive.
+                     <br>
+                  </p>
+                  <form class="form form-inline">
+                     <div class="control-group">
+                        <div id="sms-code-input">
+                           <label for="sms-code">
+                           Enter your code:
+                           </label>
+                           <input required="" type="text" id="sms-code">
+                           <span>
+                           <button id="submit-sms-code" type="submit" class="btn btn-primary disabled">
+                           Submit
+                           </button>
+                           </span>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="display-success" class="center">
+         <h2>
+            Phone Verification Complete 
+            <div id="check">✓</div>
+         </h2>
+         <div class="section success">
+            <div class="success-text">
+               <div>You will automatically be redirected...</div>
+               <div>
+                  <div id="countdown">10</div>
+                  seconds
+               </div>
+               <div><a href="{% url "index" %}">Click here to proceed now</a></div>
+            </div>
+         </div>
+      </div>
+      <div style="text-align: center; margin-top: 10px">
+         Having trouble?
+         <a target="_blank" class="signup_guide_link" href="http://localhost:8000/hc/en-us/articles/219188967#step6">
+         Check out the signup guide
+         </a>
+      </div>
+   </div>
+   <div id="merchant-china-redirect" style="bottom: 50px; z-index: 50;">
+   </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+   function UserFromLib(user){
+      // Show phone number
+      $('#phone-number').val(user.phone);
+   }
+
+$(document).ready(function(){
+
+   $('#sms-code').keyup(function(){
+      if ($('#sms-code').val().length > 0){
+         $('#submit-sms-code').removeClass('disabled');
+      } else {
+         $('#submit-sms-code').addClass('disabled');
+      }
+   });
+
+   var sendSms = true;
+   var formData = {};
+
+   // Click send sms
+   $("#send-sms-code" ).on("click", function(event) {
+      event.preventDefault();
+      $('#phone-number').prop("disabled", true);
+      formData['phone'] = $('#phone-number').val();
+      if (sendSms){
+        $.ajax({
+          type: "POST",
+          beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+          },
+          url: '/api/merchants/phone/send/',
+          data: formData,
+          dataType: "json",
+          success: function (data) {  
+            // alert(data.message);
+            sendSms = false;
+          },
+          error: function(jqXHR, text, error){
+            alert('Error!');
+          }
+        });
+      } else {
+        alert('Server sent sms. Please check !');
+      }
+   });
+
+   // Click verify sms
+   var checkVerify = 0;
+   $("#submit-sms-code" ).on("click", function(event) {
+      event.preventDefault();
+      formData['phone'] = $('#phone-number').val();
+      formData['code'] = $('#sms-code').val();
+      checkVerify = checkVerify + 1;
+      if (checkVerify < 10){
+        $.ajax({
+          type: "POST",
+          beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+          },
+          url: '/api/merchants/phone/verify/',
+          data: formData,
+          dataType: "json",
+          success: function (data) {  
+            $('#display-verify-content').css('display','none');
+            $('#display-success').css('display','block');
+            var counter = 10;
+            setInterval(function() {
+               counter--;
+               $('#countdown').html(counter);
+               if (counter == 0) {
+                  $(location).attr('href', '{% url "index" %}');
+               }
+            }, 1000);
+          },
+          error: function(jqXHR, text, error){
+            alert('Error!');
+          }
+        });
+      } else {
+        alert('Please contact admin for more information!');
+      }
+   });
+
+});
+
+</script>
+{% endblock %}

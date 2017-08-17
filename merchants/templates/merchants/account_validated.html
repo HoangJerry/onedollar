@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'merchants/js/jquery-require-bootstrap.js' %}">
+</script>
+<script type="text/javascript" src="{% static 'merchants/js/lib.js' %}">
+</script>
+
+<script type="text/javascript">
+var indexPage = '{% url "index" %}?msg=1';
+
+$(document).ready(function() {
+  // check validate
+  (function() {
+    var formData = {};
+    formData['code'] = getUrlParameter('code');
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/email/verify/check/',
+      data: formData,
+      dataType: "json",
+      success: function (data) {  
+        alert('Email validated!');
+        $(location).attr('href', indexPage);
+      },
+      error: function(jqXHR, text, error){
+        alert('Error!');
+      }
+    });      
+  })();
+});
+
+// Code by LvntTruong + HoangTN
+
+</script>

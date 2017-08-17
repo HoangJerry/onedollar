@@ -1,0 +1,291 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/new_onboarding_page.css' %}">
+{% endblock %}
+
+{% block sub_header_nav %}
+<div id="sub-header-nav" class="navbar navbar-fixed-top sub-header" style="left: 0px;">
+   <div class="navbar-inner">
+      <div class="container-fluid">
+         <div class="pull-left">
+            <ul class="nav">
+            </ul>
+         </div>
+         <div class="pull-right">
+            <ul class="nav">
+               <li id="menu-help" class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Help
+                  <b class="caret"></b></a>
+                  <ul class="dropdown-menu pull-right">
+                     <li>
+                        <a href="/policy/home">
+                        Wish Policies
+                        </a>
+                     </li>
+                     <li>
+                        <a href="/faq">
+                        FAQ
+                        </a>
+                     </li>
+                  </ul>
+               </li>
+               <li id="menu-account" class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Account
+                  <b class="caret"></b></a>
+                  <ul class="dropdown-menu pull-right">
+                     <li><a href="/logout">Logout</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="banner-container" style="margin-top: 39px;"></div>
+{% endblock %}
+
+{% block content %}
+<!-- Step 3 -->
+ <div id="page-container" class="center">
+    <div id="onboarding-page-content">
+       <div class="onboarding-form">
+          <div class="title"> Tell us about your store </div>
+          <form class="form">
+             <div class="row-fluid">
+                <div class="span12 control-group">
+                   <label class="control-label" for="store_url"> What store platform are you currently using? </label> 
+                   <div class="controls input-prepend input-append">
+                      <select id="store_platform" name="store_platform" class="form-control add-on" required="" data-name="Current store platform">
+                         <option value="Amazon">Amazon</option>
+                         <option value="Wish">Wish</option>
+                         <option value="Other">Other</option>
+                      </select>
+                      <input type="url" oninvalid="setCustomValidity('Please enter a complete URL:  http://...')" id="store_url" name="url_store_platform" data-name="URL/Link to store" class="form-control" value="" placeholder="URL/Link to store" required oninput="setCustomValidity('')"> <span class="add-on"><i class="icon icon-pencil"></i></span>
+                   </div>
+                </div>
+             </div>
+             <div class="row-fluid">
+                <div class="span12 control-group">
+                   <label class="control-label" for="annual_gmv"> How much revenue did your store make last year? (USD) </label> 
+                   <div class="controls input-append"> <input type="text" class="form-control" required="" min="0" step="0.01" value="" id="annual_gmv" name="revenue_lastyear" placeholder="Revenue last year (USD)" data-name="Revenue last year"> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+                </div>
+             </div>
+             <div class="row-fluid">
+                <div class="span12 control-group"> <label class="control-label" for="warehouse_location_country"> Where is your inventory/warehouse located? </label> </div>
+             </div>
+             <div class="row-fluid">
+                <div class="span6 control-group">
+                   <div class="controls input-append">
+                      <select id="warehouse_location_country" name="warehouse_located" data-name="Warehouse/Inventory Country" class="form-control" required="">
+                         <option value="Argentina">Argentina</option>
+                         <option value="Australia">Australia</option>
+                         <option value="Austria">Austria</option>
+                         <option value="Barbados">Barbados</option>
+                         <option value="Belarus">Belarus</option>
+                         <option value="Belgium">Belgium</option>
+                         <option value="Bermuda">Bermuda</option>
+                         <option value="Brazil">Brazil</option>
+                         <option value="Bulgaria">Bulgaria</option>
+                         <option value="Canada">Canada</option>
+                         <option value="Chile">Chile</option>
+                         <option value="China">China</option>
+                         <option value="Colombia">Colombia</option>
+                         <option value="Costa Rica">Costa Rica</option>
+                         <option value="Croatia">Croatia</option>
+                         <option value="Czech Republic">Czech Republic</option>
+                         <option value="Denmark">Denmark</option>
+                         <option value="Dominican Republic">Dominican Republic</option>
+                         <option value="Ecuador">Ecuador</option>
+                         <option value="Egypt">Egypt</option>
+                         <option value="Estonia">Estonia</option>
+                         <option value="Finland">Finland</option>
+                         <option value="France">France</option>
+                         <option value="Germany">Germany</option>
+                         <option value="Greece">Greece</option>
+                         <option value="Hong Kong">Hong Kong</option>
+                         <option value="Hungary">Hungary</option>
+                         <option value="India">India</option>
+                         <option value="Indonesia">Indonesia</option>
+                         <option value="Ireland">Ireland</option>
+                         <option value="Israel">Israel</option>
+                         <option value="Italy">Italy</option>
+                         <option value="Jamaica">Jamaica</option>
+                         <option value="Japan">Japan</option>
+                         <option value="Jordan">Jordan</option>
+                         <option value="Kuwait">Kuwait</option>
+                         <option value="Latvia">Latvia</option>
+                         <option value="Liechtenstein">Liechtenstein</option>
+                         <option value="Lithuania">Lithuania</option>
+                         <option value="Luxembourg">Luxembourg</option>
+                         <option value="Malaysia">Malaysia</option>
+                         <option value="Mexico">Mexico</option>
+                         <option value="Monaco">Monaco</option>
+                         <option value="Morocco">Morocco</option>
+                         <option value="Netherlands">Netherlands</option>
+                         <option value="New Zealand">New Zealand</option>
+                         <option value="Norway">Norway</option>
+                         <option value="Pakistan">Pakistan</option>
+                         <option value="Peru">Peru</option>
+                         <option value="Philippines">Philippines</option>
+                         <option value="Poland">Poland</option>
+                         <option value="Portugal">Portugal</option>
+                         <option value="Puerto Rico">Puerto Rico</option>
+                         <option value="Romania">Romania</option>
+                         <option value="Russia">Russia</option>
+                         <option value="Saudi Arabia">Saudi Arabia</option>
+                         <option value="Singapore">Singapore</option>
+                         <option value="Slovakia">Slovakia</option>
+                         <option value="Slovenia">Slovenia</option>
+                         <option value="South Africa">South Africa</option>
+                         <option value="South Korea">South Korea</option>
+                         <option value="Spain">Spain</option>
+                         <option value="Sweden">Sweden</option>
+                         <option value="Switzerland">Switzerland</option>
+                         <option value="Taiwan">Taiwan</option>
+                         <option value="Thailand">Thailand</option>
+                         <option value="Turkey">Turkey</option>
+                         <option value="Ukraine">Ukraine</option>
+                         <option value="United Arab Emirates">United Arab Emirates</option>
+                         <option value="United Kingdom">United Kingdom</option>
+                         <option value="United States">United States</option>
+                         <option value="Venezuela">Venezuela</option>
+                         <option value="Vietnam">Vietnam</option>
+                         <option value="Virgin Islands, British">Virgin Islands, British</option>
+                         <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+                      </select>
+                      <span class="add-on" data-original-title="Warehouse/Inventory Country is required" data-placement="right" data-trigger="manual" style="border-radius: 0px 4px 4px 0px;">×</span>
+                   </div>
+                </div>
+                <div class="span6 control-group">
+                   <div class="controls input-append"> <input type="text" data-name="Warehouse/Inventory Region" class="form-control" value="" name="warehouse_street" id="warehouse_location_region" placeholder="State/Province/Region" required> <span class="add-on"><i class="icon icon-pencil"></i></span> </div>
+                </div>
+             </div>
+             <div class="row-fluid">
+                <div class="span12 control-group">
+                   <label class="control-label" for="product_categories"> Product Categories </label> 
+                   <div class="row-fluid">
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Men&#39;s Clothing"> Men's Clothing </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Bags"> Bags </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Kids, Baby &amp; Toys"> Kids, Baby &amp; Toys </label> </div>
+                   </div>
+                   <div class="row-fluid">
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Cell Phone Accessories"> Cell Phone Accessories </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Women&#39;s Clothing"> Women's Clothing </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Shoes"> Shoes </label> </div>
+                   </div>
+                   <div class="row-fluid">
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Jewelry, Watches &amp; Accessories"> Jewelry, Watches &amp; Accessories </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Electronics &amp; Gadgets"> Electronics &amp; Gadgets </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Home &amp; Kitchen"> Home &amp; Kitchen </label> </div>
+                   </div>
+                   <div class="row-fluid">
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Makeup &amp; Beauty"> Makeup &amp; Beauty </label> </div>
+                      <div class="span4"> <label class="checkbox-label"> <input type="checkbox" class="form-control" value="Sports &amp; Outdoors"> Sports &amp; Outdoors </label> </div>
+                   </div>
+                </div>
+             </div>
+          
+          <div id="bottom-notice"> By clicking "Enter my store", you agree to <a href="/terms-of-service" target="_blank"> Wish's Terms of Service </a> and <a href="/policy/home" target="_blank"> Policies </a> </div>
+          <hr>
+          <div class="buttons clearfix">
+             <div class="pull-left"> 
+             <a id="back-btn" class="btn-link text-btn onboarding-btn"> Back </a>
+             </div>
+             <div class="pull-right">
+              <input type="submit" id="next-btn" class="flat-orange-btn onboarding-btn" value="Next">
+              <div class="onboarding-btn loading" style="display: none;"></div>
+
+             </div>
+          </div>
+          </form>
+       </div>
+    </div>
+ </div>
+
+{% endblock %}
+
+{% block global_js %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var formData = {};
+    var form = $(".form");
+    // Back button
+    $('#back-btn').click(function(event){
+      window.history.back();
+    });
+
+    // Collect data from form
+    $( "input[type=checkbox]" ).on("click", function(){
+      product_categories = "";
+      $( "input:checked" ).each(function (index, node) {
+        product_categories = product_categories + node.value + ", ";
+      });
+      product_categories = product_categories.slice(0, -1);
+      formData['product_categories'] = product_categories;
+    });
+
+    // Submit form
+    $(".form").submit(function() {
+      $('#next-btn').prop('type', 'hidden');
+      $('.loading').css('display','block');
+
+      $(form).find("input[name]").each(function (index, node) {
+        if(node.value == "") check = true ;
+        formData[node.name] = node.value;
+      });
+      $(form).find("select[name]").each(function (index, node) {
+        if(node.value == "") check = true ;
+        formData[node.name] = node.value;
+      });
+
+      $.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+          request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+        },
+        url: '/api/merchants/me/',
+        data: formData,
+        dataType: "json",
+        success: function (data) {  
+          // $(location).attr('href', '{% url "register_step3" %}');
+          sendMailVerify();
+        },
+        error: function(jqXHR, text, error){
+          alert('Error!');
+          $('#next-btn').prop('type', 'submit');
+          $('.loading').css('display','none');
+        }
+      });      
+      return false;
+    });
+  });
+
+  function sendMailVerify(){
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/email/verify/',
+      dataType: "json",
+      success: function (data) {  
+        alert("An email has been sent to your email address for validate your account.");
+        $(location).attr('href', '{% url "index" %}');
+      },
+      error: function(jqXHR, text, error){
+        alert('Error!');
+        $(location).attr('href', '{% url "index" %}');
+      }
+    });
+  }
+</script>
+
+
+
+{% endblock %}

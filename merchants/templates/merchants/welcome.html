@@ -1,0 +1,143 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/welcome_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+  <a href="{% url 'login' %}" class="login-btn btn">Login</a>
+{% endblock %}
+
+{% block content %}
+    <div id="welcome-page-content" class="center">
+        <div id="section-1" class="section">
+           <div>
+              <div class="column left">
+                 <div class="message message-1">The fastest way to sell your products</div>
+                 <div class="message message-2">
+                    Your products will be seen by millions of consumers who use Wish for shopping every day
+                 </div>
+                 <a class="signup-btn" href="{% url 'register' %}">Try For Free</a>
+              </div>
+              <div class="column right">
+                 <i class="sprite-tmp_welcome_page-phone_with_feed__290_344"></i>
+              </div>
+           </div>
+        </div>
+        <div id="section-2" class="section">
+           <div class="title">Zero Effort. Zero Risk.</div>
+           <ul>
+              <li>
+                 <i class="sprite-tmp_welcome_page-cart_51_41"></i>
+                 <div class="item-detail">
+                    <div class="item-title">Start making sales right away</div>
+                    <div class="item-message">
+                       Wish will show your products to over 32 million consumers in the United States and Europe.
+                    </div>
+                 </div>
+              </li>
+              <li>
+                 <i class="sprite-tmp_welcome_page-checkmark_50_48"></i>
+                 <div class="item-detail">
+                    <div class="item-title">There are no fees unless you sell</div>
+                    <div class="item-message">
+                       Wish works on a revenue sharing model. We get paid when you do. You will not be charged until you make your first sale.
+                    </div>
+                 </div>
+              </li>
+              <li>
+                 <i class="sprite-tmp_welcome_page-phone_50_50"></i>
+                 <div class="item-detail">
+                    <div class="item-title">Effective mobile commerce</div>
+                    <div class="item-message">
+                       Hundreds of thousands of consumers spend thirty minutes browsing products on Wish every day. Sell your products directly to consumers on their mobile devices.
+                    </div>
+                 </div>
+              </li>
+              <li>
+                 <i class="sprite-tmp_welcome_page-lighbulb_50_50"></i>
+                 <div class="item-detail">
+                    <div class="item-title">Reach relevant consumers</div>
+                    <div class="item-message">
+                       We will show your products to relevant consumers based on their demographics, purchase behavior, and wishlists.
+                    </div>
+                 </div>
+              </li>
+           </ul>
+        </div>
+        <div id="section-3" class="section">
+           <ul>
+              <li>
+                 <i class="sprite-tmp_welcome_page-ic_upload"></i>
+                 <div class="step">Step 1</div>
+                 <div class="step-text">Upload your products</div>
+              </li>
+              <li>
+                 <i class="sprite-tmp_welcome_page-ic_people"></i>
+                 <div class="step">Step 2</div>
+                 <div class="step-text">Millions of relevant consumers see your products</div>
+              </li>
+              <li>
+                 <i class="sprite-tmp_welcome_page-ic_sales"></i>
+                 <div class="step">Step 3</div>
+                 <div class="step-text">Quickly generate lots of sales</div>
+              </li>
+           </ul>
+           <div id="separator"></div>
+           <div id="testimonials">
+              <ul>
+                 <li>
+                    <i class="sprite-tmp_welcome_page-quote"></i>
+                    <div class="testimonial first">
+                       <div class="testimonial-content">
+                          "Wish merchant platform is a game changer and how commerce should be conducted in the future."
+                       </div>
+                       <div class="testimonial-source">
+                          - Ray
+                       </div>
+                    </div>
+                 </li>
+                 <li>
+                    <i class="sprite-tmp_welcome_page-quote"></i>
+                    <div class="testimonial">
+                       <div class="testimonial-content">
+                          "Once you get orders on Wish, you will wonder why all merchants out there don't use Wish."
+                       </div>
+                       <div class="testimonial-source">
+                          - Sam
+                       </div>
+                    </div>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div id="section-4" class="section">
+           <ul>
+              <li>
+                 <a class="press-item" target="_blank" href="http://allthingsd.com/20130131/ambitious-startup-wish-aims-to-outsmart-the-business-of-online-shopping/">
+                    <div class="item press-title">Wish Aims to Outsmart the Business of Online Shopping</div>
+                    <i class="item press-img sprite-tmp_welcome_page-wsj-logo"></i>
+                 </a>
+              </li>
+              <li>
+                 <a class="press-item" target="_blank" href="http://www.forbes.com/sites/tomtaulli/2013/06/04/wish-gunning-for-mobile-commerce-dominance/">
+                    <div class="item press-title">Wish: Gunning For Mobile Commerce Dominance</div>
+                    <i class="item press-img sprite-tmp_welcome_page-forbes-logo"></i>
+                 </a>
+              </li>
+              <li>
+                 <a class="press-item" target="_blank" href="http://techcrunch.com/2013/05/31/with-over-12m-users-wish-com-hopes-its-adwords-for-shopping-will-stick/">
+                    <div class="item press-title">Wish.com Hopes Its AdWords For Shopping Will Stick</div>
+                    <i class="item press-img sprite-tmp_welcome_page-tc-logo"></i>
+                 </a>
+              </li>
+           </ul>
+           <a class="signup-btn signup-btn-bottom" href="{% url 'register' %}">Try For Free</a>
+        </div>
+     </div>
+{% endblock %}
+
+{% block global_js %}
+
+{% endblock %}

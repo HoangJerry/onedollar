@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      div#productInfos { background: #84b42d; padding: 3px; top: 0; width: 100%; color: #fff; }
+      div#productInfos table { width: 100%; }
+      div#productInfos td { vertical-align: top; border: 1px solid #fff; padding: 5px; width: 12.5%; }
+      div#productInfos td:nth-child(odd) { text-decoration: underline; font-weight: 900; }
+      div#productInfos td:nth-child(even) { font-style: italic; }
+      form { background: #84b42d; padding: 3px; position: fixed; bottom: 5px; width: 100%; text-align: center }
+      form input { border: 0; padding: 10px; width: 80%; }
+      form button { width: 9%; background: #fff; border: none; padding: 10px; margin: 0 .3%; }
+      #messages { list-style-type: none; margin: 0; margin-bottom: 60px; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li.me { background: #eee; }
+      #messages li label { float: right; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <div id="productInfos">
+        <table>
+            <col><col><col><col><col><col><col><col>
+            <tr>
+                <td>Name</td><td>{{ product.winner.get_full_name }}</td>
+                <td>Email</td><td>{{ product.winner.email }}</td>
+                <td>Tel</td><td>{{ product.winner.phone }}</td>
+                <td rowspan="4">Shipment address</td>
+                <td rowspan="4">{{ product.winner_address|safe }}</td>
+            </tr>
+            <tr>
+                <td>Product</td><td><a target="_blank" href="{% url 'admin:onedollar_product_change' product.id %}">{{ product.title }}</a></td>
+                <td>Winning Number</td><td>{{ product.win_number }}</td>
+                <td>Days left to ship</td><td>{{ product.days_left_to_ship }}</td>
+            </tr>
+            <tr>
+                <td>Ordering date</td><td>{{ product.ordering_date }}</td>
+                <td>Ordering tracking</td><td>{{ product.ordering_tracking }}</td>
+                <td>From</td><td>{{ product.from }}</td>
+            </tr>
+            <tr>
+                <td>Cost of product</td><td>{{ product.cost }}</td>
+                <td>Total Entries</td><td>{{ product.sold_tickets }}</td>
+                <td>P/L</td><td>{{ product.pl_value }}</td>
+            </tr>
+        </table>
+
+    </div>
+    <ul id="messages"></ul>
+    <form action="">
+        <button id="btnMarkAsRead">Mark as read</button><input id="m" autocomplete="off" /><button  id="btnSend">Send</button>
+    </form>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    var token = getUrlParameter('token');
+    var user = parseInt(getUrlParameter('user'));
+    var winner = parseInt(getUrlParameter('winner'));
+    var product = parseInt(getUrlParameter('product'));
+    var lastChatDate = "0";
+
+    var getMessages = function() {
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "/api/users/"+winner+"/products/"+product+"/comments/?from=bechat",
+            "method": "GET",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": "Token "+token,
+            }
+        }
+
+        $.ajax(settings).done(function (response) {
+            for (var i=0, total = response.results.length; i < total; i++) {
+                var msg = response.results[i];
+                displayMessage(msg);
+            }
+        });
+    };
+    getMessages();
+
+    var socket = io('{{ SITE_URL }}:3000', {
+        query: location.search.substring(1),
+    });
+
+    $('#btnMarkAsRead').click(function(event, wasTriggered) {
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "/api/users/me/badges/",
+            "method": "DELETE",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": "Token "+token,
+            },
+            "processData": false,
+            "data": "{\"badge_type\": \"chat\",\"ids\": \""+product+"\"}"
+        }
+
+        $.ajax(settings).done(function (response) {
+            if (response.result == "OK" && wasTriggered != true) {
+                $('#messages').append($('<li>').text('Marked as read successfully!!!'));
+            }
+        });
+
+        return false;
+    });
+
+    $(function() { $('#btnMarkAsRead').click(); });
+
+    $("#m").keydown(function(event){
+        if(event.keyCode == 13){
+            event.preventDefault();
+            $('#btnSend').click();
+            return false;
+        }
+    });
+
+    $('#btnSend').click(function(){
+        msg = $('#m').val();
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "/api/users/"+winner+"/comments/",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": "Token "+token,
+            },
+            "processData": false,
+            "data": "{\"comment\": \""+msg+"\", \"product\": "+product+"}"
+        }
+
+        $.ajax(settings).done(function (response) {
+            $('#m').val('');
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "/api/users/"+winner+"/products/"+product+"/lastread/",
+                "method": "POST",
+                "headers": {
+                    "content-type": "application/json",
+                    "authorization": "Token "+token,
+                },
+                "processData": false,
+                "data": "{\"lastread\":\""+lastChatDate+"\"}"
+            }
+
+            $.ajax(settings).done(function (response) {
+            });
+
+            $('#btnMarkAsRead').trigger('click', true);
+        });
+
+        return false;
+    });
+
+    var displayMessage = function(msg) {
+        var $li = $('<li>');
+        var msgStr = msgToString(msg);
+
+        if (msgStr.search("<strong>me: </strong>") == 0) {
+            $li.addClass("me");
+        }
+
+        $li.html(msgStr);
+        $('#messages').append($li);
+        window.scrollTo(0, document.body.scrollHeight);
+
+        if (lastChatDate < msg.creation_date) {
+            lastChatDate = msg.creation_date;
+        }
+    };
+
+    var msgToString = function(msg) {
+        if (msg.to_user == user) {
+            ret = "<strong>"+msg.user.first_name+" "+msg.user.last_name+": </strong>"+msg.comment;
+        } else {
+            ret = "<strong>me: </strong>"+msg.comment;
+        }
+        ret += "<label>"+msg.creation_date_text+"</label>";
+        return ret;
+    }
+
+    socket.on('chat message', function(msg){
+        msg = JSON.parse(msg);
+        if (msg.product == product) {
+            displayMessage(msg);
+        }
+    });
+  </script>
+  </body>
+</html>
+

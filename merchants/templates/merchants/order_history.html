@@ -1,0 +1,510 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/transactions_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Modal -->
+<div class="modal fade" id="lvnTruongModal" role="dialog" style="width: 85%;left:28.5%;"
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Tracking Information</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover persist-area">
+          <thead class="persist-header">
+            <tr>
+              <th> Date </th>
+              <th>State</th>
+              <th>View Product (SKU)</th>
+              <th>Variation</th>
+              <th>Price</th>
+              <th>Shipping Cost</th>
+              <th>Quantity</th>
+              <th>Total Cost</th>
+              <th>Payment Status</th>
+              <th>Ship to</th>
+            </tr>
+          </thead>
+          <tbody class="tbody-modal">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-body" style="width: 70%;left:15%; margin-top: -30px;">
+        <form class="form form-horizontal">
+             <div class="control-group">
+                <label class="control-label">
+                Shipping Provider</label>
+                <div class="controls input-append">
+                  <select id="shipping_provider" class="form-control" style="width: 100%;">
+                    <option value="USPS">USPS</option>
+                    <option value="FEDEX">FEDEX</option>
+                    <option value="EMS">EMS</option>
+                  </select>
+                </div>
+             </div>
+             <div class="control-group">
+                <label class="control-label">
+                Tracking Number</label>
+                <div class="controls input-append">
+                   <input type="text" id="tracking_number" name="tracking_number" class="input-block-level" placeholder="RP123456789PN" required>
+                </div>
+             </div>             
+             <div class=" alert alert-info" style="margin-left: 52px;margin-right: 83px;">
+              Your order becomes eligible for delivery is confirmed.
+              </div>
+             <div class="control-group">
+                <label class="control-label">
+                Note to yourself</label>
+                <div class="controls input-append">
+                   <textarea type="text" id="note_to_yourself" name="note_to_yourself" class="input-block-level"></textarea>
+                </div>
+             </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="transactions-page">
+    <div class="row-fluid">
+      <span class="span12">
+        <legend>
+          History - <span id="history-count">0</span>
+        </legend>
+        <span>
+        <a href="{% url "index" %}hc/en-us/articles/204530088-Increase-your-sales-by-adding-sizing-information" target="_blank">
+        Curious how to increase your sales?
+        </a>
+        </span>
+        <div id="history-transaction-list">
+          <div class="action-bar">
+            <div class="pull-left">
+              <!-- <div class="option-item"> Showing  0  to 0 </div> -->
+            </div>
+            <div class="pull-right">
+            <div class="option-item"> <a class="btn export-csv csv_truong" rel="tooltip" title="Export all product below to a csv file"> <i class="icon-file"></i> Export All CSV </a> </div>
+            <div class="option-item"> <a class="btn export-csv excel_truong" rel="tooltip" title="Export all product below to a excel file"> <i class="icon-file"></i> Export All XLS </a></div>
+            <div class="option-item">
+              <div class="input-append input-prepend">
+                <select id="search-type" class="span2 add-on">
+                  <option value="order_id" selected=""> Order Id </option>
+                  <option value="product_name"> Product Name </option>
+                  <option value="sku"> SKU </option>
+                  <option value="tracking_id"> Tracking Number </option>
+                </select>
+                <input class="span2" name="query" id="transaction-search" type="text" placeholder="Search..." value=""> <span class="add-on btn" id="transaction-search-btn"><i class="icon-search"></i></span> 
+              </div>
+            </div>
+              <div class="option-item">
+                <div class="input-prepend">
+                  <span class="add-on"><i class="icon-list"></i></span> 
+                  <select id="display-count" class="span2">
+                    <option value="100" selected=""> 100 </option>
+                    <option value="250"> 250 </option>
+                    <option value="500"> 500 </option>
+                  </select>
+                </div>
+              </div>
+              <div class="option-item pagination">
+                <ul>
+                  <li class="prev disabled"><a>Previous</a></li>
+                  <li class="next disabled"><a>Next</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <p class="no-results" style="display: none;">There are no transactions</p>
+        </div>
+      </span>
+    </div>
+
+    <table class="table table-hover persist-area">
+        <thead class="persist-header">
+          <tr>
+            <th>Thumbnail</th>
+            <th> Date </th>
+            <th>Order ID</br>(Transaction ID)</th>
+            <th>State</th>
+            <th>View Product (SKU)</th>
+            <th>Variation</th>
+            <th>Price</th>
+            <th>Shipping Cost</th>
+            <th>Quantity</th>
+            <th>Total Cost</th>
+            <th>Payment Status</th>
+            <th>Ship to</th>
+            <th>Shipment track</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-main">
+        </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+  var orders_global;
+  var order_global;
+
+  function callAjaxAgain(urlApi){
+    $('#loading-overlay').css('visibility', 'visible');
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: urlApi,
+      dataType: "json",
+      success: function (data) {
+        $('#loading-overlay').css('visibility', 'hidden');
+        console.log(data);
+        $('table tbody').find("tr").remove(); // Remove all records
+        orders_global = data.results;
+        showOrder(data.results);
+        checkPaginations(data);
+        if (data.count == 0){
+          $('#no-results').css('display','block');
+        }
+        $('#history-count').html(data.count + ' Orders');
+      },
+      error: function(jqXHR, text, error){
+      }
+    });
+  }
+
+  if (getUrlParameter('id')){
+    callAjaxAgain('/api/shop/order/me/?page_size=100&search_id='+getUrlParameter('id'));
+  } else {
+    callAjaxAgain('/api/shop/order/me/?page_size=100');
+  }
+
+  function showOrder(orders){
+    orders.reverse().map(function(order, key){  
+      var thumbnail = order.product_obj.photos[0]?order.product_obj.photos[0].image:'';
+      var shipping_cost = order.product_obj.shipping_cost?order.product_obj.shipping_cost:0;
+      var tracking_number = order.tracking_number?order.tracking_number.replace('-','<br>'):'N/A';
+      var total_cost = order.amount-shipping_cost;
+      var ship_to_user = order.firstname +" "+ order.lastname
+      var ship_to_location = order.user.city+","+ order.user.province +" "+ order.user.postal_code
+      order.creation_date = order.creation_date.replace('T', ' ').replace('Z', '');
+
+      // var disabled_view = order.tracking_number?'':'style="display: none;"';
+      var disabled_ship = (order.tracking_number || (order.delivery_status==40) )?'style="display: none;"':'';
+      var disabled_refund = (order.delivery_status==40)?'style="display: none;"':'';
+      var linkToProduct = '{% url "product" %}?id='+order.product;
+      var tmpl = `
+        <tr>
+          <td> <a href="${linkToProduct}"> <img src="${thumbnail}" /> </a> </td>
+          <td> ${order.creation_date}</td>
+          <td>
+            <a>${order.id} (${order.transaction_id})</a> 
+          </td>
+          <td style ="width:30px;">${order.delivery_status_display}</td>
+          <td><a href="${linkToProduct}">${order.product_obj.unique_id}</a></td>
+          <td style ="text-align: center;">${order.variation}</td>
+          <td>${total_cost}</td>
+          <td>${shipping_cost}</td>
+          <td>1</td>
+          <td>${order.amount}</td>
+          <td style ="width:100px;font-size:13px">Paid on ${order.creation_date} UTC </td>
+          <td style ="width:200px; text-align:right;">${ship_to_user}<br>${order.user.street1}<br>${order.user.street2}<br>${ship_to_location}<br>${order.user.country.name}</td>
+          <td>${tracking_number}</td>
+          <td>
+            <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" href="{% url "order_history" %}#"> Actions <span class="caret"></span> </a> 
+              <ul class="dropdown-menu pull-right">
+                <!-- editing.... -->  
+                <li> 
+                  <a class="view-detail" id_order=${order.id}>View detail</a> 
+                </li>
+                <li> 
+                  <a class="edit-ship" id_order=${order.id} ${disabled_ship}>Ship</a> 
+                </li>
+                <li> 
+                  <a class="edit-refund" id_order=${order.id} ${disabled_refund}>Refund</a> 
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      `;
+      // console.log(tmpl);
+      $('table tbody.tbody-main').append(tmpl);
+    });
+  }
+
+  function checkPaginations(data){
+    if (data.next){
+      $('.pagination .next').removeClass('disabled');
+      $('.pagination .next a').attr('src', data.next);
+    } else {
+      $('.pagination .next').addClass('disabled');
+      $('.pagination .next a').attr('src', data.next);
+    }
+    if (data.previous){
+      $('.pagination .prev').removeClass('disabled');
+      $('.pagination .prev a').attr('src', data.previous);
+    } else {
+      $('.pagination .prev').addClass('disabled');
+      $('.pagination .prev a').attr('src', data.previous);
+    }
+  }
+
+
+$(document).ready(function(){
+
+  // Event for button Paginations
+  $('.pagination .next a').on('click',function(){
+    if ($('.pagination .next a').attr('src')){
+      callAjaxAgain($('.pagination .next a').attr('src'));
+    }
+  });
+  $('.pagination .prev a').on('click',function(){
+    if ($('.pagination .prev a').attr('src')){
+      callAjaxAgain($('.pagination .prev a').attr('src'));
+    }
+  });
+
+  // Paginations
+  $('select#display-count').on('change', function() {
+    addFieldPaginations();
+  });
+
+  $('#transaction-search-btn').on('click',function(){
+    addFieldPaginations();
+  });
+
+  $('#transaction-search').on('keypress',function(e){
+    if (e.which == 13) {
+      addFieldPaginations();
+    }
+  });
+
+  function addFieldPaginations(){
+    var url = '/api/shop/order/me/';
+    url = url + '?page_size=' + $('select#display-count').val();
+    // Search
+    let value_search = $('#transaction-search').val();
+    switch ($('#search-type').val()) {
+      case 'product_name':
+        url = url + '&search_name=' + value_search;
+        break;
+      case 'order_id':
+        url = url + '&search_id=' + value_search;
+        break;
+      case 'sku':
+        url = url + '&search_sku=' + value_search;
+        break;
+      case 'tracking_id':
+        url = url + '&search_tracking=' + value_search;
+        break;
+      default:
+        break;
+    }
+
+    callAjaxAgain(url);
+  }        
+
+  // Download
+  $('.csv_truong').on('click',function(){
+    window.open('{% url "api"%}'+'shop/export/order/csv/', '_blank');
+  });   
+
+  $('.excel_truong').on('click',function(){
+    window.open('{% url "api"%}'+'shop/export/order/xls/', '_blank');
+  });  
+
+  // Modal view-detail event
+  $('.table-hover').on('click','a.view-detail',function(){
+    var id_order = $(this).attr('id_order');
+    orders_global.map(function(order, key){
+      if (order.id == id_order){
+        order_global = order;
+      }
+    });
+    let shipping_provider = (order_global.tracking_number)?order_global.tracking_number.split('-')[0]:'USPS';
+    let order_global_ship_to = order_global.firstname +" "+ order_global.lastname +"<br>"+ order_global.user.street1 +" , "+ order_global.user.city+" , "+ order_global.user.province +"<br>"+ order_global.user.country.name;
+    let order_global_shipping_cost = order_global.product_obj.shipping_cost?order_global.product_obj.shipping_cost:0;
+    let order_global_total_cost = order_global.amount - order_global_shipping_cost;
+
+    $('#shipping_provider option[value='+shipping_provider+']').attr("selected",true);
+    $('#tracking_number').val((order_global.tracking_number)?order_global.tracking_number.split('-')[1]:'N/A');
+    $('#note_to_yourself').val(order_global.note_yourself);
+    // disabled
+    $('#shipping_provider').attr("disabled",true);
+    $('#tracking_number').attr("disabled",true);
+    $('#note_to_yourself').attr("disabled",true);
+
+    $('.modal-footer button').text('Close');
+    $('.modal-footer button').removeClass('btn-primary');
+    $('.modal-footer button').removeClass('btn-danger');
+
+    var tmpl = `
+      <tr>
+        <td>${order_global.creation_date}</td>
+        <td>${order_global.delivery_status_display}</td>
+        <td>${order_global.product_obj.unique_id}</td>
+        <td>${order_global.variation}</td>
+        <td>${order_global_total_cost}</td>
+        <td>${order_global.product_obj.shipping_cost}</td>
+        <td>1</td>
+        <td>${order_global.amount}</td>
+        <td>Paid on ${order_global.creation_date} UTC </td>
+        <td style="min-width: 150px;text-align: right;">${order_global_ship_to}</td>
+      </tr>
+    `;
+    $('table tbody.tbody-modal').html("");
+    $('table tbody.tbody-modal').append(tmpl);
+    $('#lvnTruongModal').modal('show');
+  }); 
+
+  // Modal edit-ship event
+  $('.table-hover').on('click','a.edit-ship',function(){
+    var id_order = $(this).attr('id_order');
+    orders_global.map(function(order, key){
+      if (order.id == id_order){
+        order_global = order;
+      }
+    });
+    let shipping_provider = (order_global.tracking_number)?order_global.tracking_number.split('-')[0]:'USPS';
+    let order_global_ship_to = order_global.firstname +" "+ order_global.lastname +"<br>"+ order_global.user.street1 +" , "+ order_global.user.city+" , "+ order_global.user.province +"<br>"+ order_global.user.country.name;
+    let order_global_shipping_cost = order_global.product_obj.shipping_cost?order_global.product_obj.shipping_cost:0;
+    let order_global_total_cost = order_global.amount - order_global_shipping_cost;
+
+    $('.modal-footer button').addClass('btn-primary');
+    $('.modal-footer button').removeClass('btn-danger');
+    $('.modal-footer button').text('Confirm Shipment');
+    // clear form
+    $('#shipping_provider').attr("disabled",false);
+    $('#tracking_number').attr("disabled",false);
+    $('#note_to_yourself').attr("disabled",false);
+    $('.form-horizontal').find("input[type=text], textarea").val("");
+
+    var tmpl = `
+      <tr>
+        <td>${order_global.creation_date}</td>
+        <td>${order_global.delivery_status_display}</td>
+        <td>${order_global.product_obj.unique_id}</td>
+        <td>${order_global.variation}</td>
+        <td>${order_global_total_cost}</td>
+        <td>${order_global.product_obj.shipping_cost}</td>
+        <td>1</td>
+        <td>${order_global.amount}</td>
+        <td>Paid on ${order_global.creation_date} UTC </td>
+        <td style="min-width: 150px;text-align: right;">${order_global_ship_to}</td>
+      </tr>
+    `;
+    $('table tbody.tbody-modal').html("");
+    $('table tbody.tbody-modal').append(tmpl);
+    $('#lvnTruongModal').modal('show');
+  });  
+
+  // Modal edit-refund event
+  $('.table-hover').on('click','a.edit-refund',function(){
+    var id_order = $(this).attr('id_order');
+    orders_global.map(function(order, key){
+      if (order.id == id_order){
+        order_global = order;
+      }
+    });
+    let shipping_provider = (order_global.tracking_number)?order_global.tracking_number.split('-')[0]:'USPS';
+    let order_global_ship_to = order_global.firstname +" "+ order_global.lastname +"<br>"+ order_global.user.street1 +" , "+ order_global.user.city+" , "+ order_global.user.province +"<br>"+ order_global.user.country.name;
+    let order_global_shipping_cost = order_global.product_obj.shipping_cost?order_global.product_obj.shipping_cost:0;
+    let order_global_total_cost = order_global.amount - order_global_shipping_cost;
+
+    $('#shipping_provider option[value='+shipping_provider+']').attr("selected",true);
+    $('#tracking_number').val((order_global.tracking_number)?order_global.tracking_number.split('-')[1]:'N/A');
+    $('#note_to_yourself').val(order_global.note_yourself);
+    // disabled
+    $('#shipping_provider').attr("disabled",true);
+    $('#tracking_number').attr("disabled",true);
+    $('#note_to_yourself').attr("disabled",true);
+
+    $('.modal-footer button').text('Refund $' + parseInt(order_global.amount));
+    $('.modal-footer button').removeClass('btn-primary');
+    $('.modal-footer button').addClass('btn-danger');
+
+    var tmpl = `
+      <tr>
+        <td>${order_global.creation_date}</td>
+        <td>${order_global.delivery_status_display}</td>
+        <td>${order_global.product_obj.unique_id}</td>
+        <td>${order_global.variation}</td>
+        <td>${order_global_total_cost}</td>
+        <td>${order_global.product_obj.shipping_cost}</td>
+        <td>1</td>
+        <td>${order_global.amount}</td>
+        <td>Paid on ${order_global.creation_date} UTC </td>
+        <td style="min-width: 150px;text-align: right;">${order_global_ship_to}</td>
+      </tr>
+    `;
+    $('table tbody.tbody-modal').html("");
+    $('table tbody.tbody-modal').append(tmpl);
+
+    $('#lvnTruongModal').modal('show');
+  }); 
+
+  // Button ship event
+  $('.modal-footer').on('click','button.btn-primary', function(){
+    let formData = {};
+    formData['order_id'] = order_global.id;
+    formData['tracking_number'] = $('#shipping_provider').val() +'-'+ $('#tracking_number').val();
+    formData['note_yourself'] = $('#note_to_yourself').val();
+
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/shop/order/tracking/',
+      data: formData,
+      dataType: "json",
+      success: function (data) {  
+        location.reload();
+      },
+      error: function(jqXHR, text, error){
+      }
+    }); 
+  });
+
+  // Button refund event
+  $('.modal-footer').on('click','button.btn-danger', function(){
+    if (confirm("This is irrevocable.​\n Are you sure you want to refund this order?")) {
+      let formData = {};
+      formData['order_id'] = order_global.id;
+      $.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+          request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+        },
+        url: '/api/shop/order/refund/',
+        data: formData,
+        dataType: "json",
+        success: function (data) {  
+          location.reload();
+        },
+        error: function(jqXHR, text, error){
+        }
+      }); 
+    }
+  });
+});
+</script>
+{% endblock %}

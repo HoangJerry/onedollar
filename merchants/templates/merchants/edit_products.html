@@ -1,0 +1,378 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <!-- Style page -->
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/add_products_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+  <div id="add-products-page" class="center">
+    <div>
+      <legend>Edit Products</legend>
+      <div style="margin: 0 auto; width: 50%; text-align:center"> Having trouble? <a target="_blank" class="signup_guide_link" href=""> Check out the signup guide </a> </div>
+      <div id="add-product-form">
+        <div id="basic-info" class="form-horizontal">
+          <div class="section-title">Basic Information</div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="3"> <span class="col-name">Product Name</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <input class="input-block-level required" name="title" type="text" value="" placeholder="Acceptable: Men&#39;s Dress Casual Shirt Navy">  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="8"> <span class="col-name">Description</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <textarea rows="5" class="input-block-level required" name="description" type="text" value="" placeholder="Acceptable: This dress shirt is 100% cotton and fits true to size."></textarea>  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="7"> <span class="col-name">Tags</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">
+              <ul class="typeahead-tokenizer">
+                <li class="token-li first-li"><input name="tags" class="token-input " type="text" placeholder="Acceptable: Shirt, Men&#39;s Fashion, Navy, Blue, Casual, Apparel"></li>
+              </ul>
+              <span class="add-on"><i class="icon-pencil"></i></span> 
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="1"> <span class="col-name">Unique Id</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <input class="input-block-level required" name="unique_id" type="text" value="" placeholder="Acceptable: HSC0424PP">  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+        </div>
+        <div id="inventory-shipping" class="form-horizontal earnings-section">
+          <div class="section-title">Inventory and Shipping</div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="2"> <span class="col-name">Price</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <input class="input-block-level required" name="buying_price" type="text" value="" placeholder="Acceptable: $100.99">  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="4"> <span class="col-name">Quantity</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <input class="input-block-level required" name="orders_count" type="text" value="" placeholder="Acceptable: 1200">  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" data-col-index="5"> <span class="col-name">Shipping</span> <i class="icon-question-sign"></i> </label> 
+            <div class="controls input-append">   <input class="input-block-level required" name="shipping_cost" type="text" value="" placeholder="Acceptable: $4.00">  <span class="add-on"><i class="icon-pencil"></i></span> </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label"> <span> Earnings</span> </label> 
+            <div class="controls input-append"> <input class="input-block-level" type="text" id="earnings" disabled=""> </div>
+          </div>
+          <input type="hidden" name="Shipping Time" id="shipping-time-submit"> 
+          <div id="shipping-time">
+            <div class="control-label"> Shipping Time </div>
+            <div id="common-ship-time">
+              <label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="0" checked=""> 0 </label><label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="1"> 5 - 10 </label>    <label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="2"> 7 - 14 </label>    <label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="3"> 10 - 15 </label>    <label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="4"> 14 - 21 </label>    <label class="ship-time-labels"> <input type="radio" class="ship-time-checkbox" name="ship-time-checkbox" value="5"> 21 - 28 </label>   
+            </div>
+          </div>
+        </div>
+<!--         <div id="add-variations" class="form-horizontal">
+          <div class="section-title">Product Variations</div>
+          <div id="variations-section" class="variations-section">
+            <div id="variations-heading" class="hide">
+              <h5 class="variation-heading-size">Size</h5>
+              <h5 class="variation-heading-color">Color</h5>
+              <h5 class="variation-input-large">Unique Id (SKU)</h5>
+              <h5 class="variation-input-small">Price</h5>
+              <h5 class="variation-input-small">Quantity</h5>
+              <h5 class="variation-input-earnings">Earnings</h5>
+            </div>
+          </div>
+        </div> -->
+        <div id="summary-action" class="form-horizontal">
+          <div class="section-title">Summary</div>
+          <div class="control-group text-center">
+            <div id="summary-info" class="alert alert-info hide"> Creating <span id="product-name"></span> with <span id="variations-count">0</span> variations </div>
+          </div>
+          <div id="buttons-section" class="control-group text-right">
+             <!-- <button id="clear-button" class="btn btn-large">Clear</button>  -->
+            <button id="submit-button" type="submit" class="btn btn-primary btn-large">Submit</button>  
+            <div id="loading-spinner" class="loading" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 0 auto; width: 50%; text-align:center"> Having trouble? <a target="_blank" class="signup_guide_link" href="{% url "index" %}hc/en-us/articles/219188967#step8"> Check out the signup guide </a> </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+
+$( document ).ready(function() {
+
+  (function(){
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/shop/product/me/'+getUrlParameter('id')+'/',
+      dataType: "json",
+      success: function (data) {  
+        console.log(data); 
+        $("input[name*='title']").val(data.title);
+        $("input[name*='unique_id']").val(data.unique_id);
+        $("input[name*='orders_count']").val(data.orders_count);
+        $("textarea[name*='description']").val(data.description);
+        $("input[name*='tags']").val(data.tags);
+        $("input[name*='shipping_cost']").val(data.shipping_cost);
+        $("input[name*='buying_price']").val(data.buying_price);
+        $("input[name='ship-time-checkbox'][value='" + data.shipping_time + "']").prop('checked', true);
+        calculateEarning();
+      },
+      error: function(jqXHR, text, error){
+        $(location).attr('href', '{% url "product" %}');
+      }
+    }); 
+  })();
+
+  // //// Product Variations ////
+  // var colors = [];
+  // var sizes = [];
+  // // Colors
+  // $('#colors-info input[type=checkbox]').on('change', function(){
+  //   colors = [];
+  //   $('#colors-info input[type=checkbox]').each(function () {
+  //     if (this.checked){
+  //       colors.push($(this).val());
+  //     }
+  //   });
+  //   scCombination();
+  // });  
+  // // Sizes
+  // $('.tab-content input[type=checkbox]').on('change', function(){
+  //   sizes = [];
+  //   $('.tab-content input[type=checkbox]').each(function () {
+  //     if (this.checked){
+  //       sizes.push($(this).val());
+  //     }
+  //   });
+  //   scCombination();
+  // });
+  // // Combination Sizes and Colors
+  // function scCombination(){
+  //   var combos = [];
+  //   if (colors.length == 0){
+  //     combos = sizes;
+  //     gProVariations(combos, 'sizes');
+  //   } else if (sizes.length == 0){
+  //     combos = colors;
+  //     gProVariations(combos, 'colors');
+  //   } else {
+  //     colors.forEach(function(c){
+  //       sizes.forEach(function(s){
+  //         combos.push(c + ':' + s);
+  //       });
+  //     });
+  //     gProVariations(combos);
+  //   }
+  // }
+  // // Genarate html Product Variations
+  // function gProVariations(combos, condition){
+  //   $('#variations-section .variation-row').remove();
+  //   if (combos.length){
+  //     combos.map(function(combo){
+  //       let checkColor = true;
+  //       let color = '';
+  //       let size = '';
+  //       let style = '';
+  //       if (condition == 'sizes'){
+  //         size = combo;
+  //         checkColor = false;
+  //       } else if (condition == 'colors'){
+  //         color = combo;
+  //       } else {
+  //         let obj = combo.split(":");
+  //         color = obj[0];
+  //         size = obj[1];
+  //       }
+  //       if (checkColor){
+  //         style = 'style="background-color: ' + color + '"';
+  //         if (color == 'Multicolor'){
+  //           style = 'style="background-image: url('+'https://main.cdn.merchant.wish.com/c9971081a477/img/multicolor.png'+');background-size: 20px 12px;"';
+  //         }
+  //         // Fix color =))
+  //         if (color == 'Green'){
+  //           style = 'style="background-color: ' + '#00FF00' + '"';
+  //         }
+  //         if (color == 'NavyBlue'){
+  //           style = 'style="background-color: ' + '#000080' + '"';
+  //         }
+  //         style = '<div class="color-box" ' + style + '> </div>';
+  //       }
+  //       // gen HTML
+  //       $('#variations-heading').css('display','block');
+  //       let lvnt = `
+  //         <div class="variation-row earnings-section" name="${size}${color}">
+  //           <div class="variation-inputs"> <span name="size-label" class="variation-name-label">${size}</span> </div>
+  //           <div class="variation-inputs">
+  //             <span name="color-label" class="variation-name-label">
+  //               ${style} ${color}
+  //             </span>
+  //           </div>
+  //           <input type="hidden" name="size" value="${size}">
+  //           <input type="hidden" name="color" value="${color}">      
+  //           <div class="control-group">
+  //             <div class="controls input-append input-large"> <input class="input-block-level required" name="unique_id" type="text" value="" placeholder="Acceptable: HSC0424PP"> <span class="add-on"><i class="icon-pencil"></i></span>
+  //             </div>
+  //           </div>
+  //           <div class="control-group">
+  //             <div class="controls input-append input-small"> <input class="input-block-level required" name="buying_price" id="price__lvnt" type="text" value="" placeholder="1200"> <span class="add-on"><i class="icon-pencil"></i></span> </div>
+  //           </div>
+  //           <div class="control-group">
+  //             <div class="controls input-append input-small"> <input class="input-block-level required" name="quantity" type="text" value="" placeholder="1200"> <span class="add-on"><i class="icon-pencil"></i></span> </div>
+  //           </div>
+  //           <div class="control-group">
+  //             <div class="controls input-append input-small">
+  //               <input class="input-block-level" type="text" id="earnings__lvnt" disabled="" value="">
+  //             </div>
+  //           </div>
+  //         </div>
+  //       `;
+  //       $('#variations-section').append(lvnt);
+  //     });
+  //   } else {
+  //     $('#variations-heading').css('display','none');
+  //   }
+  // }
+
+  //// Calculate Earning ////
+  $('input[name^="buying_price"]').on('keyup', function(){
+    calculateEarning();
+  });
+
+  $('input[name^="shipping_cost"]').on('keyup', function(){
+    calculateEarning();
+  });
+
+  function calculateEarning(){
+    if ($('input[name^="buying_price"]').val() && $('input[name^="shipping_cost"]').val()){
+      let earning = (parseInt($('input[name^="buying_price"]').val()) + parseInt($('input[name^="shipping_cost"]').val()))*0.8;
+      $('#earnings').val(parseFloat(earning).toFixed(2));
+    } else {
+      $('#earnings').val('');
+    }
+  }
+
+  $('#variations-section').on('keyup', '#price__lvnt', function(){
+    let earning_button = $(this).parent().parent().next().next().find("input");
+    if ($(this).val()){
+      let earning = parseInt($(this).val())*0.8;
+      $(earning_button).val(parseFloat(earning).toFixed(2));
+    } else {
+      $(earning_button).val('');
+    }
+  });
+  
+  // Form Data
+  var formData = new FormData();
+
+  //// Button Submit ////
+  $("#submit-button").click(function() {
+    // Check before submit
+    if (!$('input[name^="title"]').val()){
+      $('#summary-action .control-group:eq(0)').html('<div id="summary-error" class="alert alert-error"> You are missing the product name. </div>');
+    } else
+    if (!$('input[name^="buying_price"]').val()){
+      $('#summary-action .control-group:eq(0)').html('<div id="summary-error" class="alert alert-error"> You are missing the Price. </div>');
+    } else
+    if (!$('textarea[name^="description"]').val()){
+      $('#summary-action .control-group:eq(0)').html('<div id="summary-error" class="alert alert-error"> You are missing the Description. </div>');
+    } else
+    if (!$('input[name^="orders_count"]').val()){
+      $('#summary-action .control-group:eq(0)').html('<div id="summary-error" class="alert alert-error"> You are missing the Quantity. </div>');
+    } else
+    if (!$('input[name^="shipping_cost"]').val()){
+      $('#summary-action .control-group:eq(0)').html('<div id="summary-error" class="alert alert-error"> You are missing the Shipping. </div>');
+    } else {
+
+      $('#summary-error').remove();
+
+      // var checkVariation = true;
+      // // From product varidations
+      // $('.variation-row').each(function () {
+      //   let obj = {};
+      //   $(this).find("input[name]").each(function (index, node) {
+      //     obj[node.name] = node.value;
+      //   });
+      //   formData.append('uniques', JSON.stringify(obj));
+      //   checkVariation = false;
+      // });
+
+      // if (checkVariation) {
+      //   let obj = {};
+      //   obj['unique_id'] = $('input[name^="unique_id"]').val();
+      //   obj['buying_price'] = $('input[name^="buying_price"]').val();
+      //   obj['quantity'] = $('input[name^="orders_count"]').val();
+      //   obj['shipping_cost'] = $('input[name^="shipping_cost"]').val();
+      //   obj['size'] = '';
+      //   obj['color'] = '';
+      //   formData.append('uniques', JSON.stringify(obj));
+      // }
+
+      // Data
+      // Default value
+      formData.append('reward_tokens', 0);
+      // Value
+      formData.append('title', $('input[name^="title"]').val());
+      formData.append('description', $('textarea[name^="description"]').val());
+      formData.append('tags', $('input[name^="tags"]').val());
+      formData.append('unique_id', $('input[name^="unique_id"]').val());
+      formData.append('buying_price', $('input[name^="buying_price"]').val());
+      formData.append('retail_price', $('input[name^="buying_price"]').val()*1.5);
+      formData.append('orders_count', $('input[name^="orders_count"]').val());
+      formData.append('shipping_cost', $('input[name^="shipping_cost"]').val());
+      formData.append('shipping_time', $('input[name^="ship-time-checkbox"]:checked').val());
+
+      // // Colors
+      // $('#colors-info input[type=checkbox]').each(function () {
+      //   if (this.checked){
+      //     formData.append('colors', $(this).val());
+      //   }
+      // });
+
+      // // Sizes
+      // $('.tab-content input[type=checkbox]').each(function () {
+      //   if (this.checked){
+      //     formData.append('sizes', $(this).val());
+      //   }
+      // });
+
+      
+        $('#submit-button').css('display', 'none');
+        $('.loading').css('display','block');
+
+        $.ajax({
+          type: "PUT",
+          beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+          },
+          url: '/api/shop/product/me/'+getUrlParameter('id')+'/',
+          data: formData,       
+          processData: false,  // tell jQuery not to process the data
+          contentType: false,  // tell jQuery not to set contentType
+          dataType: "json",
+          success: function (data) {  
+            formData = new FormData();
+            $(location).attr('href', '{% url "product" %}');
+          },
+          error: function(jqXHR, text, error){
+            alert('Error');
+            formData = new FormData();
+            $('#submit-button').css('display', 'inline-block');
+            $('.loading').css('display','none')
+            return false;
+          }
+        });     
+      return false;
+    }
+  });
+});
+</script>
+{% endblock %}

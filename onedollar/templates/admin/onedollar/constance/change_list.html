@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load admin_static admin_list i18n %}
+
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+  {{ media.css }}
+  <style>
+    #result_list .changed {
+          background-color: #ffc;
+    }
+    h3{
+      color:#ef6c00;
+    }
+    #changelist table thead th .text {
+      padding: 2px 5px;
+    }
+    #changelist table tbody td:first-child {
+        text-align: left;
+    }
+    #changelist-form ul.errorlist {
+      margin: 0 !important;
+    }
+    .help {
+        font-weight: normal !important;
+  }
+  </style>
+{% endblock %}
+
+{% block extrahead %}
+{% url 'admin:jsi18n' as jsi18nurl %}
+<script type="text/javascript" src="{{ jsi18nurl|default:'../../jsi18n/' }}"></script>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+  function submitForm(){
+    var form = $('#changelist-form');
+    var url = form.attr("action");
+    var formData = {};
+    $(form).find("input[name]").each(function (index, node) {
+      formData[node.name] = node.value;
+    });
+    $(form).find("textarea[name]").each(function (index, node) {
+      formData[node.name] = node.value;
+    });
+    $.post(url, formData).done(function (data) {
+      location.reload();
+      alert("Saved");
+    });
+  }
+
+  $(function() {
+    str = $(location).attr('href');
+    if (str.indexOf("gameconfig")==-1){
+      $('h3').css('display','none')
+      $('table').css('display','none');
+      $('h3').last().css('display','block');
+      $('table').last().css('display','block');
+    }
+    else{
+      $('h3').last().css('display','none');
+      $('table').last().css('display','none');
+      $('#HoangTN_game_link').text('Game config')
+      $('.hoang').click(function(event){
+        event.preventDefault();
+        submitForm();
+      });      
+    }
+  });
+
+</script>
+{{ block.super }}
+{{ media.js }}
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block content %}
+  <div id="content-main" class="constance">
+    <div class="module" id="changelist">
+        <form id="changelist-form" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% if form.errors %}
+            <ul class="errorlist">
+            {% endif %}
+            {% for field in form.hidden_fields %}
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+                {{ field }}
+            {% endfor %}
+            {% if form.errors %}
+            </ul>
+            {% endif %}
+
+            {% if fieldsets %}
+              {% for fieldset in fieldsets %}
+              <h3>{{ fieldset.title }}</h3>
+              {% with config_values=fieldset.config_values %}
+                  {% include "admin/constance/includes/results_list.html" %}
+              {% endwith %}
+              {% endfor %}
+            {% else %}
+              {% include "admin/constance/includes/results_list.html" %}
+            {% endif %}
+
+            <p class="paginator">
+            <input type="submit" name="_save" class="default hoang" value="{% trans 'Save' %}"/>
+            </p>
+        </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{app_label|capfirst|escape }}</a>
+&rsaquo; <a id = "HoangTN_game_link"> {{ opts.verbose_name_plural|capfirst }} </a>
+</div>
+{% endblock %}

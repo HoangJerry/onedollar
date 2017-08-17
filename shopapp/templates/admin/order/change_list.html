@@ -1,0 +1,20 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+
+{{ block.super }}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $('#content-main ul.object-tools').hide();
+        $('#content-main ul.object-tools').html('<i>developer by Hoang</i>');
+    });
+})(django.jQuery);
+</script>
+{% endblock %}
+

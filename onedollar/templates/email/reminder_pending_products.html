@@ -1,0 +1,12 @@
+<img src="cid:emailheader.png"><br />
+Hi,<br />
+<br />
+You have {{ products_count }} pending product. Here is the list. Ship them ASAP.<br />
+<br />
+{% for product in products %}
+<a target="_blank" href="{{ SITE_URL }}{% url 'admin:onedollar_product_change' product.id %}">{{ product.id }}</a>, {{ product.title }}, days left to ship: {{ product.days_left_to_ship }}, {{ product.winner.first_name }}, {{ product.winner.last_name }}, <a target="_blank" href="{{ SITE_URL }}{% url 'admin:onedollar_onedollaruser_change' product.winner.id %}">{{ product.winner.email }}</a><br />
+{% endfor %}
+<br />
+Regards,<br />
+<br />
+Jess<br />

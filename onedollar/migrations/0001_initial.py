@@ -1,0 +1,388 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import multiselectfield.db.fields
+import django.utils.timezone
+from django.conf import settings
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('auth', '0006_require_contenttypes_0002'),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='OneDollarUser',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(null=True, verbose_name='last login', blank=True)),
+                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
+                ('email', models.CharField(unique=True, max_length=254)),
+                ('username', models.CharField(unique=True, max_length=40, db_index=True)),
+                ('first_name', models.CharField(max_length=100, null=True, blank=True)),
+                ('last_name', models.CharField(max_length=100, null=True, blank=True)),
+                ('dob', models.DateField(null=True, blank=True)),
+                ('gender', models.PositiveSmallIntegerField(default=1, verbose_name='gender', choices=[(0, 'Female'), (1, 'Male'), (2, 'Both')])),
+                ('fb_access_token', models.TextField(null=True, blank=True)),
+                ('fb_uid', models.CharField(max_length=50, unique=True, null=True, blank=True)),
+                ('gp_uid', models.CharField(max_length=50, unique=True, null=True, blank=True)),
+                ('gp_access_token', models.TextField(null=True, blank=True)),
+                ('parse_id', models.CharField(max_length=20, null=True, blank=True)),
+                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
+                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
+                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
+                ('status', models.PositiveSmallIntegerField(default=0, verbose_name='status', choices=[(0, 'Enabled'), (10, 'Blocked'), (20, 'Deleted')])),
+                ('about', models.TextField(null=True, blank=True)),
+                ('relationship_status', models.CharField(max_length=30, null=True, blank=True)),
+                ('latitude', models.FloatField(null=True, blank=True)),
+                ('longitude', models.FloatField(null=True, blank=True)),
+                ('avatar', models.ImageField(null=True, upload_to=b'avatars', blank=True)),
+                ('credits', models.FloatField(default=0, verbose_name='credits')),
+                ('free_credits', models.FloatField(default=1, verbose_name='free credits')),
+                ('creation_date', models.DateTimeField(auto_now_add=True)),
+                ('is_email_verified', models.BooleanField(default=False)),
+                ('is_phone_verified', models.BooleanField(default=False)),
+                ('is_payment_verified', models.BooleanField(default=False)),
+                ('is_accept_terms_of_service', models.BooleanField(default=False)),
+                ('is_recharged', models.BooleanField(default=False)),
+                ('phone', models.CharField(max_length=20, null=True, blank=True)),
+                ('street1', models.CharField(max_length=300, null=True, blank=True)),
+                ('street2', models.CharField(max_length=300, null=True, blank=True)),
+                ('postal_code', models.CharField(max_length=10, null=True, blank=True)),
+                ('province', models.CharField(max_length=100, null=True, blank=True)),
+                ('city', models.CharField(max_length=100, null=True, blank=True)),
+                ('friends_count', models.IntegerField(default=0, verbose_name='friends count')),
+                ('sms_count', models.IntegerField(default=0, verbose_name='sms count')),
+                ('aggregated_topups', models.DecimalField(default=0, max_digits=12, decimal_places=2)),
+                ('platform', models.CharField(max_length=10, null=True, blank=True)),
+                ('deviceID', models.CharField(max_length=100, null=True, blank=True)),
+                ('referral_code', models.CharField(max_length=50, null=True, blank=True)),
+                ('receive_bonus', models.BooleanField(default=False)),
+                ('is_flagged', models.BooleanField(default=False)),
+            ],
+            options={
+                'abstract': False,
+                'verbose_name': 'User',
+            },
+        ),
+        migrations.CreateModel(
+            name='Bet',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('number', models.IntegerField()),
+                ('creation_date', models.DateTimeField(auto_now_add=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('creation_date', models.DateTimeField(auto_now_add=True)),
+                ('modification_date', models.DateTimeField(auto_now=True)),
+                ('status', models.SmallIntegerField(default=0, choices=[(0, 'Disable'), (10, 'Enable')])),
+                ('name', models.CharField(max_length=50, verbose_name='name')),
+                ('type', models.PositiveSmallIntegerField(default=1, verbose_name='type', choices=[(1, 'Bet'), (2, 'Shop')])),
+                ('creator', models.ForeignKey(editable=False, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name_plural': 'categories',
+            },
+        ),
+        migrations.CreateModel(
+            name='Country',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+                ('currency_code', models.CharField(max_length=10)),
+                ('creation_date', models.DateTimeField(auto_now_add=True)),
+                ('modification_date', models.DateTimeField(auto_now=True)),
+                ('status', models.SmallIntegerField(default=0, choices=[(0, 'Disable'), (10, 'Enable')])),
+            ],
+            options={
+                'verbose_name_plural': 'Countries',
+            },
+        ),
+        migrations.CreateModel(
+            name='OneDollarUserRating',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('comment', models.CharField(max_length=4000)),
+                ('rating_type', models.SmallIntegerField(choices=[(1, b'Like'), (-1, b'Dislike')])),
+                ('creation_date', models.DateTimeField(auto_now=True)),
+                ('rating_from', models.ForeignKey(related_name='rating_from', to=settings.AUTH_USER_MODEL)),
+                ('rating_to', models.ForeignKey(related_name='rating_to', to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='OneDollarUserToken',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('token', models.CharField(unique=True, max_length=200)),
+                ('user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Product',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('creation_date', models.DateTimeField()),
+                ('modification_date', models.DateTimeField(auto_now=True)),
+                ('status', models.SmallIntegerField(default=0, choices=[(0, 'Disable'), (10, 'Enable')])),
+                ('is_sponsored', models.BooleanField(default=False)),
+                ('title', models.CharField(max_length=200, verbose_name='title')),
+                ('description', models.TextField(verbose_name='description')),
+                ('no_of_days', models.PositiveSmallIntegerField(null=True, verbose_name='Number of days', blank=True)),
+                ('sold_tickets', models.IntegerField(default=0, verbose_name='sold tickets')),
+                ('end_date', models.DateTimeField(null=True, verbose_name='end date', blank=True)),
+                ('is_new', models.BooleanField(verbose_name='This is a new product')),
+                ('quantity', models.IntegerField(default=0, verbose_name='Ticket quantity')),
+                ('retail_price', models.IntegerField(null=True, verbose_name='Retail Price', blank=True)),
+                ('ticket_price', models.DecimalField(default=1, verbose_name='Ticket price per unit', max_digits=5, decimal_places=2)),
+                ('win_number', models.IntegerField(help_text='Make sure that you only edit this field for cheat mode only!!! If the result is already drawn, changing the win number may cause issues', null=True, blank=True)),
+                ('location_id', models.CharField(help_text='To get Foursqure Location ID, visit <a target="_blank" href="https://foursquare.com/">https://foursquare.com/</a> to search for a location and open the location page with URL like <a target="_blank" href="https://foursquare.com/v/starbucks-coffee--new-world-hotel/50ae4436e4b04c937a56de9c">https://foursquare.com/v/starbucks-coffee--new-world-hotel/50ae4436e4b04c937a56de9c</a>.\nThe ID is the last part of the URL, ie. 50ae4436e4b04c937a56de9c', max_length=50, null=True, blank=True)),
+                ('location_name', models.CharField(max_length=100, null=True, blank=True)),
+                ('location_address', models.CharField(max_length=400, null=True, blank=True)),
+                ('location_city', models.CharField(max_length=100, null=True, blank=True)),
+                ('location_state', models.CharField(max_length=100, null=True, blank=True)),
+                ('location_country', models.CharField(max_length=100, null=True, blank=True)),
+                ('location_lat', models.DecimalField(null=True, max_digits=9, decimal_places=6, blank=True)),
+                ('location_lng', models.DecimalField(null=True, max_digits=9, decimal_places=6, blank=True)),
+                ('payout_date', models.DateTimeField(null=True, verbose_name='payout_date', blank=True)),
+                ('latest_chat_date', models.DateTimeField(verbose_name='latest_chat_date', null=True, editable=False, blank=True)),
+                ('delivery_status', models.SmallIntegerField(default=0, choices=[(0, 'New'), (10, 'Pending'), (20, 'Sent'), (30, 'Not sent (no reply)'), (40, 'Not sent (no address)'), (50, 'Blocked or Fraud')])),
+                ('ordering_date', models.DateField(null=True, blank=True)),
+                ('ordering_tracking', models.CharField(max_length=1000, null=True, blank=True)),
+                ('cost', models.FloatField(default=0, verbose_name='COP')),
+                ('drawing_method', models.SmallIntegerField(default=0, choices=[(0, 'Random'), (1, 'FB Friends'), (2, 'Most Topups'), (3, 'Cheat mode')])),
+                ('from_shop', models.CharField(max_length=100, null=True, verbose_name='From', blank=True)),
+                ('should_display_winner_popup', models.BooleanField(default=True)),
+                ('should_display_seller_popup', models.BooleanField(default=True)),
+                ('colors', multiselectfield.db.fields.MultiSelectField(blank=True, max_length=104, null=True, choices=[(b'white', b'White'), (b'green', b'Green'), (b'beige', b'Beige'), (b'ivory', b'Ivory'), (b'black', b'Black'), (b'grey', b'Grey'), (b'pink', b'Pink'), (b'navyblue', b'Navy Blue'), (b'red', b'Red'), (b'brown', b'Brown'), (b'orange', b'Orange'), (b'purple', b'Purple'), (b'blue', b'Blue'), (b'tan', b'Tan'), (b'yellow', b'Yellow'), (b'gold', b'Gold'), (b'multicolor', b'Multicolor')])),
+                ('sizes', multiselectfield.db.fields.MultiSelectField(blank=True, max_length=24, null=True, choices=[(b'xxs', b'XXS'), (b'xs', b'XS'), (b's', b'S'), (b'm', b'M'), (b'l', b'L'), (b'xl', b'XL'), (b'xxl', b'XXL'), (b'xxxl', b'XXXL')])),
+                ('product_quantity', models.PositiveSmallIntegerField(default=0)),
+                ('iteration', models.PositiveSmallIntegerField(default=0)),
+                ('waiting_time', models.PositiveIntegerField(default=5)),
+                ('win_second_number', models.IntegerField(help_text='Make sure that you only edit this field for cheat mode only!!! If the result is already drawn, changing the win number may cause issues', null=True, blank=True)),
+                ('win_third_number', models.IntegerField(help_text='Make sure that you only edit this field for cheat mode only!!! If the result is already drawn, changing the win number may cause issues', null=True, blank=True)),
+                ('win_second_award', models.DecimalField(default=1, null=True, max_digits=9, decimal_places=3, blank=True)),
+                ('win_third_award', models.DecimalField(default=0.5, null=True, max_digits=9, decimal_places=3, blank=True)),
+                ('category', models.ForeignKey(blank=True, to='onedollar.Category', null=True)),
+                ('country', models.ManyToManyField(to='onedollar.Country')),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductCount',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('count', models.IntegerField(default=0)),
+                ('product', models.ForeignKey(to='onedollar.Product')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductPhoto',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('image', models.ImageField(upload_to=b'photos', verbose_name='Picture shall be squared, max 640*640, 500k')),
+                ('product', models.ForeignKey(related_name='photos', to='onedollar.Product')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductReporting',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('product', models.ForeignKey(to='onedollar.Product')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductReportingType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+                ('status', models.SmallIntegerField(choices=[(1, 'Enabled'), (0, 'Disabled')])),
+            ],
+        ),
+        migrations.CreateModel(
+            name='TopupPackage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('type', models.SmallIntegerField(default=1, editable=False, choices=[(1, 'PayPal'), (2, 'Stripe')])),
+                ('name', models.CharField(max_length=100)),
+                ('topup_value', models.IntegerField(default=0, verbose_name='topup value')),
+                ('credits', models.IntegerField(default=0, verbose_name='credits')),
+            ],
+            options={
+                'ordering': ['type', 'topup_value'],
+            },
+        ),
+        migrations.CreateModel(
+            name='Transaction',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('transaction_type', models.SmallIntegerField(choices=[(1, 'Top Up'), (2, 'Buy Ticket'), (3, 'Reward'), (4, 'Reward Like'), (5, 'Reward Share')])),
+                ('paypal_id', models.CharField(max_length=50, null=True, blank=True)),
+                ('amount', models.FloatField()),
+                ('money', models.FloatField(null=True, blank=True)),
+                ('creation_date', models.DateTimeField(auto_now=True)),
+                ('use_free_credit', models.BooleanField(default=True)),
+                ('channel', models.SmallIntegerField(blank=True, null=True, choices=[(1, 'PayPal'), (2, 'Stripe')])),
+                ('transaction_id', models.CharField(max_length=50, null=True, blank=True)),
+                ('payer_firstname', models.CharField(max_length=50, null=True, blank=True)),
+                ('payer_lastname', models.CharField(max_length=50, null=True, blank=True)),
+                ('payer_email', models.CharField(max_length=100, null=True, blank=True)),
+                ('bet', models.ForeignKey(blank=True, to='onedollar.Bet', null=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserCatSpin',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('daily_1', models.DateTimeField(auto_now_add=True)),
+                ('daily_2', models.DateTimeField(auto_now_add=True)),
+                ('slot_1', models.SmallIntegerField(default=0, choices=[(1, 'Full'), (0, 'Free'), (2, 'Running'), (3, 'Spin')])),
+                ('time_1', models.DateTimeField(auto_now_add=True)),
+                ('slot_2', models.SmallIntegerField(default=0, choices=[(1, 'Full'), (0, 'Free'), (2, 'Running'), (3, 'Spin')])),
+                ('time_2', models.DateTimeField(auto_now_add=True)),
+                ('slot_3', models.SmallIntegerField(default=0, choices=[(1, 'Full'), (0, 'Free'), (2, 'Running'), (3, 'Spin')])),
+                ('time_3', models.DateTimeField(auto_now_add=True)),
+                ('slot_4', models.SmallIntegerField(default=0, choices=[(1, 'Full'), (0, 'Free'), (2, 'Running'), (3, 'Spin')])),
+                ('time_4', models.DateTimeField(auto_now_add=True)),
+                ('coins', models.IntegerField(default=0)),
+                ('level', models.IntegerField(default=0)),
+                ('discount', models.FloatField(default=0, null=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserLucky',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('count', models.IntegerField(default=0)),
+                ('is_have_chance', models.IntegerField(default=0)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserReporting',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserReportingType',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
+                ('status', models.SmallIntegerField(choices=[(1, 'Enabled'), (0, 'Disabled')])),
+            ],
+        ),
+        migrations.CreateModel(
+            name='WinnerProduct',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('product', models.IntegerField(null=True, blank=True)),
+                ('win1', models.IntegerField(null=True, blank=True)),
+                ('win2', models.IntegerField(null=True, blank=True)),
+                ('win3', models.IntegerField(null=True, blank=True)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='userreporting',
+            name='report_type',
+            field=models.ForeignKey(to='onedollar.UserReportingType'),
+        ),
+        migrations.AddField(
+            model_name='userreporting',
+            name='user',
+            field=models.ForeignKey(related_name='reportings_user', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='productreporting',
+            name='report_type',
+            field=models.ForeignKey(to='onedollar.ProductReportingType'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='reportings',
+            field=models.ManyToManyField(to='onedollar.ProductReportingType', through='onedollar.ProductReporting'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='win_second',
+            field=models.ForeignKey(related_name='win_second', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='win_third',
+            field=models.ForeignKey(related_name='win_third', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='winner',
+            field=models.ForeignKey(related_name='win_products', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AddField(
+            model_name='bet',
+            name='product',
+            field=models.ForeignKey(related_name='bets', to='onedollar.Product'),
+        ),
+        migrations.AddField(
+            model_name='bet',
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='bets',
+            field=models.ManyToManyField(to='onedollar.Product', through='onedollar.Bet'),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='country',
+            field=models.ForeignKey(to='onedollar.Country'),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='groups',
+            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups'),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='referrer',
+            field=models.ForeignKey(related_name='referee', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='reportings',
+            field=models.ManyToManyField(to='onedollar.UserReportingType', through='onedollar.UserReporting'),
+        ),
+        migrations.AddField(
+            model_name='onedollaruser',
+            name='user_permissions',
+            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions'),
+        ),
+        migrations.CreateModel(
+            name='SoldProduct',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('onedollar.product',),
+        ),
+        migrations.AlterUniqueTogether(
+            name='onedollaruserrating',
+            unique_together=set([('rating_from', 'rating_to', 'rating_type')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='bet',
+            unique_together=set([('user', 'product', 'number')]),
+        ),
+    ]

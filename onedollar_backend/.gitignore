@@ -1,0 +1,32 @@
+## Standard ignored patterns
+############################
+*~
+*.pyc
+.*.swp
+*.bak
+.DS_Store
+node_modules
+
+## Project specific ignore patterns
+###################################
+settings_local.py
+db.sql
+/media/
+/www/
+/uploads/
+/static/
+/logs/*.log
+
+.project
+.metadata/
+.pydevproject
+
+## Deployment & build ignore pattern
+####################################
+# Virtual envs
+#/env/
+#/*_env/
+#/env_*/
+.elasticbeanstalk/
+.idea/
+tags

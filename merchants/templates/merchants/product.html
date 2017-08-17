@@ -1,0 +1,420 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/product_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+  <div id="product-page">
+    <div class="alert alert-warning" style="display: none;">
+      <h3>Your store is pending review</h3>
+      <p>Until your store is approved, your items will appear as "sold out"</p>
+      <p>The review process normally takes 3 business days</p>
+    </div>
+    <div id="active-product-list">
+      <div class="clearfix">
+        <div class="pull-left">
+          <legend></legend>
+          <a target="_blank" href="{% url "index" %}verified-product"> Verified by Wish Program </a> 
+        </div>
+      </div>
+      <br>  
+      <div class="subtitle clearfix">
+        <div class="pagination">
+          <ul>
+            <li class="page-prev disabled"><a>Previous</a></li>
+            <li class="page-next disabled"><a>Next</a></li>
+          </ul>
+          <div class="option-items">
+            <div class="option-item"> <a class="btn export-csv csv_truong" rel="tooltip" title="Export all product below to a csv file"> <i class="icon-file"></i> Export All CSV </a> </div>
+            <div class="option-item"> <a class="btn export-csv excel_truong" rel="tooltip" title="Export all product below to a excel file"> <i class="icon-file"></i> Export All XLS </a> </div>
+            <div class="option-item">
+              <div class="input-prepend">
+                <span class="add-on"><i class="icon-list"></i></span> 
+                <select id="display-count" class="span2">
+                  <option value="50" selected=""> 50 </option>
+                  <option value="100"> 100 </option>
+                  <option value="250"> 250 </option>
+                </select>
+              </div>
+            </div>
+            <div class="option-item truong"></div>
+          </div>
+        </div>
+      </div>
+      <div class="subtitle clearfix">
+        <div class="pagination">
+          <div class="option-items">
+            <div class="option-item filter-item form-inline">
+              <span class="filter-item-title"> Review Status
+                <i id="trigger-review-status-popover" class="icon-question-sign" data-original-title=""></i>
+              </span>
+              <span class="filter-item-body">
+                <label for="show-under-review">
+                  <input type="checkbox" id="show-under-review" name="show-under-review" checked=""> Pending Review
+                </label>
+                <label class="show-accepted" for="show-accepted">
+                  <input type="checkbox" id="show-accepted" name="show-accepted" checked=""> Approved
+                </label>
+                <label class="" for="show-rejected"> 
+                  <input type="checkbox" id="show-rejected" name="show-rejected"> Rejected
+                </label> 
+              </span> 
+            </div>
+            <div class="option-item filter-item form-inline">
+              <span class="filter-item-title"> State <i id="trigger-state-popover" class="icon-question-sign" data-original-title=""></i>
+              </span>
+              <span class="filter-item-body"> <label for="show-enabled"> <input type="checkbox" id="show-enabled" name="show-enabled" checked=""> Enabled </label> <label class="" for="show-disabled"> <input type="checkbox" id="show-disabled" name="show-disabled" checked=""> Disabled </label>
+              </span>
+            </div>
+            <div class="option-item">
+              <div class="controls">
+                <div class="input-append input-prepend">
+                  <select id="search-type" class="span2 add-on">
+                    <option value="name"> Product Name </option>
+                    <option value="id"> Product Id </option>
+                    <option value="parent_sku"> Parent SKU </option>
+                  </select>
+                  <input name="query" id="contest-search" type="text"> <span class="add-on btn" id="contest-search-btn"><i class="icon-search"></i></span> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="table table-hover persist-area">
+        <thead class="persist-header">
+          <tr>
+            <th> Thumbnail </th>
+            <th>Product ID</th>
+            <th>Status</th>
+            <th>Product Name</th>
+            <th> Parent SKU </th>
+            <th>SKU</th>
+            <th>Price</th>
+            <th>Shipping</th>
+            <th>Inventory</th>
+            <th>Date Uploaded</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+      <div class="text-center">
+        <button type="submit" class="update btn btn-large btn-primary">Update</button>
+      </div>
+      <div class="pagination pagination-centered">
+        <ul>
+          <li class="page-prev disabled"><a>Previous</a></li>
+          <li class="page-next disabled"><a>Next</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+  function MerchantFromLib(merchant){
+    if (merchant.status != 0){
+      $('#product-page .alert-warning:eq(0)').css('display', 'block');
+      if (merchant.status == 30){
+        $('#product-page .alert-warning:eq(0) h3').text("Go to Home and submit your store for approval")
+      }
+    }
+  }
+
+  function callAjaxAgain(urlApi){
+    $('#loading-overlay').css('visibility', 'visible');
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: urlApi,
+      dataType: "json",
+      success: function (data) {
+        $('#loading-overlay').css('visibility', 'hidden');
+        $('table tbody').find("tr").remove(); // Remove all records
+        console.log(data);
+        checkPaginations(data);
+        showProduct(data.results);
+        $('legend').html(data.results.length + ' Products');
+        $('.option-item.truong').html(1 + ' to ' + data.results.length + ' Product');
+      },
+      error: function(jqXHR, text, error){
+      }
+    });
+  }
+
+  if (getUrlParameter('id')){
+    callAjaxAgain('/api/shop/product/me/?page_size=50&search_id='+getUrlParameter('id'));
+  } else {
+    callAjaxAgain('/api/shop/product/me/?page_size=50&status__in=0,10,30,20');
+  }
+
+  function showProduct(products){
+    products.reverse().map(function(product, key){  
+      var statusProduct = "Pending";
+      var msgStatusProduct = "";
+      if ((product.status != 10) && (product.status != 30)){
+        var msgStatusProduct = '<i rel="tooltip" title="This product is waiting to be reviewed and cannot be purchased by customers yet." class="review-pending product-image-icon"></i>';
+      }
+      switch (product.status) {
+        case 0: statusProduct = 'Disabled';
+          break;        
+        case 10: statusProduct = 'Enabled';
+          break;
+        case 30: statusProduct = 'Approved';
+          break;
+        case 40: statusProduct = 'Rejected';
+          break;
+        default:
+          statusProduct = 'Pending';
+        break;
+      }
+
+      var enable_sku = (product.status==0)?'':'style="display: none;"';
+      var disable_sku = (product.status==0)?'style="display: none;"':'';
+
+      var variantionTmpl = '';
+      var variantionSum = 0;
+      product.sku = '';
+      if (product.uniques.length != 0){
+        variantionSum = product.uniques.length;
+        product.uniques.map(function(obj, key){  
+          if (obj != product.uniques[0]){
+            variantionTmpl = variantionTmpl + `
+              <tr>
+                <input name="unique_id" type="hidden" value="${obj.unique_id}">
+                <input name="product_id" type="hidden" value="${product.id}">
+                <td name="unique_id">${obj.unique_id}</td>
+                <td>
+                  <input class="input-mini" name="buying_price" type="text" value="${obj.buying_price}">
+                </td>
+                <td>
+                  <input class="input-mini" name="shipping_cost" type="text" value="${obj.shipping_cost}">
+                </td>
+                <td>
+                  <input class="input-mini" name="quantity" type="text" value="${obj.quantity}">
+                </td>
+              </tr>
+            `;
+          } else {
+            product.sku = obj.unique_id;
+            product.orders_count = obj.quantity;
+          }
+        });
+      }
+      var tmpl = `
+        <tr>
+          <input name="product_id" type="hidden" value="${product.id}">
+          <input name="unique_id" type="hidden" value="${product.sku}">
+          <td rowspan="${variantionSum}"> <a class="product-image badge-popover" href="{% url 'edit_products' %}?id=${product.id}"> ${msgStatusProduct} <img src="${product.photos[0].image}"> </a>
+          </td>
+          <td rowspan="${variantionSum}">
+            <a href="{% url 'edit_products' %}?id=${product.id}">${product.id}</a> 
+            <div class="badge-wrapper">   </div>
+          </td>
+          <td rowspan="${variantionSum}">${statusProduct}</td>
+          <td rowspan="${variantionSum}">${product.title}</td>
+          <td rowspan="${variantionSum}">${product.unique_id}</td>
+          <td>${product.sku}</td>
+          <td> <input class="input-mini" name="buying_price" type="text"  sku="${product.unique_id}" value="${product.uniques[0].buying_price}"> </td>
+          <td> <input class="input-mini" name="shipping_cost" type="text"  sku="${product.unique_id}" value="${product.uniques[0].shipping_cost}"> </td>
+          <td> <input class="input-mini" name="quantity" type="text" sku="${product.unique_id}" value="${product.uniques[0].quantity}"> </td>
+          <td rowspan="${variantionSum}">${product.creation_date} UTC </td>
+          <td rowspan="${variantionSum}">
+            <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" href="{% url "index" %}product#"> Actions <span class="caret"></span> </a> 
+              <ul class="dropdown-menu pull-right">
+                <!-- editing.... -->  
+                <li> <a class="edit-contest" href="{% url "edit_products" %}?id=${product.id}">Edit Listing</a> </li>
+                <li> <a class="edit-contest" onclick="updateStatusProduct(${product.id}, 0)" ${disable_sku}>Disable all SKU</a> </li>
+                <li> <a class="edit-contest" onclick="updateStatusProduct(${product.id}, 10)" ${enable_sku}>Enable all SKU</a> </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+        ${variantionTmpl}
+      `;
+      // console.log(tmpl);
+      $('table tbody').append(tmpl);
+    });
+  }
+
+  function checkPaginations(data){
+    if (data.next){
+      $('.page-next').removeClass('disabled');
+      $('.page-next a').attr('src', data.next);
+    } else {
+      $('.page-next').addClass('disabled');
+      $('.page-next a').attr('src', data.next);
+    }
+    if (data.previous){
+      $('.page-prev').removeClass('disabled');
+      $('.page-prev a').attr('src', data.previous);
+    } else {
+      $('.page-prev').addClass('disabled');
+      $('.page-prev a').attr('src', data.previous);
+    }
+  }
+
+  // Disable product
+  function updateStatusProduct(idProduct, status){
+    var message = '';
+    if (status==0){
+      message = "Are you sure to disable this product?\nProduct will only be re-enabled when approved by the admin!";
+    } else {
+      message = "Product will only be re-enabled when approved by the admin!";
+    }
+    if(confirm(message)){
+      var fd = {};
+      fd['product_id'] = idProduct;
+      fd['status'] = status;
+      $.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+          request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+        },
+        url: '/api/shop/product/update/status/',
+        data: fd,       
+        dataType: "json",
+        success: function (data) {  
+          $(location).attr('href', '{% url "product" %}');
+        },
+        error: function(jqXHR, text, error){
+          // alert('Error');
+          // formData = new FormData();
+          // $('#submit-button').css('display', 'inline-block');
+          // $('.loading').css('display','none')
+          return false;
+        }
+      });
+    }
+  }
+
+$(document).ready(function() {
+
+  // Paginations
+  $(".pagination input:checkbox").on('click',function(){
+    addFieldPaginations();
+  });
+
+  $('select#display-count').on('change', function() {
+    addFieldPaginations();
+  });
+
+  $('#contest-search-btn').on('click',function(){
+    addFieldPaginations();
+  });
+
+  $('#contest-search').on('keypress',function(e){
+    if (e.which == 13) {
+      addFieldPaginations();
+    }
+  });
+
+  function addFieldPaginations(){
+    var url = '/api/shop/product/me/';
+    url = url + '?page_size=' + $('select#display-count').val();
+    url = url + '&status__in=';
+    if($('#show-disabled').prop("checked")) url = url + '0,';
+    if($('#show-enabled').prop("checked")) url = url + '10,';
+    if($('#show-rejected').prop("checked")) url = url + '40,';
+    if($('#show-accepted').prop("checked")) url = url + '30,';
+    if($('#show-under-review').prop("checked")) url = url + '20,';
+    url = url.substring(0, url.length-1);
+    // Search
+    let value_search = $('#contest-search').val();
+    switch ($('#search-type').val()) {
+      case 'name':
+        url = url + '&search_name=' + value_search;
+        break;
+      case 'id':
+        url = url + '&search_id=' + value_search;
+        break;
+      case 'parent_sku':
+        url = url + '&search_sku=' + value_search;
+        break;
+      default:
+        break;
+    }
+
+    callAjaxAgain(url);
+  }
+
+  // Event for button
+  $('.page-next a').on('click',function(){
+    if ($('.page-next a').attr('src')){
+      $('table tbody').find("tr").remove(); // Remove all records
+      callAjaxAgain($('.page-next a').attr('src'));
+    }
+  });
+  $('.page-prev a').on('click',function(){
+    if ($('.page-prev a').attr('src')){
+      $('table tbody').find("tr").remove(); // Remove all records
+      callAjaxAgain($('.page-prev a').attr('src'));
+    }
+  });
+
+
+  // Downloads
+
+  $('.csv_truong').on('click',function(){
+    window.open('{% url "api"%}'+'shop/export/product/csv/', '_blank');
+  });
+
+  $('.excel_truong').on('click',function(){
+    window.open('{% url "api"%}'+'shop/export/product/xls/', '_blank');
+  });  
+
+  $('.update').click(function(){
+    var formData = new FormData();
+    $('tbody tr').each(function () {
+      let obj = {};
+      $(this).find("input[name]").each(function (index, node) {
+        obj[node.name] = node.value;
+      });
+      formData.append('uniques', JSON.stringify(obj));
+    });
+
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/shop/product/update/unique/',
+      data: formData,       
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,  // tell jQuery not to set contentType
+      dataType: "json",
+      success: function (data) {  
+        formData = new FormData();
+        $(location).attr('href', '{% url "product" %}');
+      },
+      error: function(jqXHR, text, error){
+        alert('Error');
+        formData = new FormData();
+        $('#submit-button').css('display', 'inline-block');
+        $('.loading').css('display','none')
+        return false;
+      }
+    });   
+  });
+
+});
+</script>
+{% endblock %}

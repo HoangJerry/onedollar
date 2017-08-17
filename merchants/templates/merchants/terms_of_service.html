@@ -1,0 +1,93 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/terms_of_service.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+      <div id="page-content" class="container-fluid  user">
+         <div id="confirm-terms-of-service-page" class="row page">
+            <div class="tos-full tos-box" style="display:none;">
+               <div class="tos-body">
+                  <div class="terms-full-placeholder"></div>
+               </div>
+               <div class="tos-footer clearfix">
+                  <input type="button" class="pull-right orange-btn agree-tos" value="Agree">
+               </div>
+            </div>
+            <div class="tos-brief tos-box">
+               <h3 class="tos-header">Wish Key Terms of Service</h3>
+               <div class="tos-body">
+                  <div class="terms-brief-placeholder">
+                     <div>
+                        <div id="terms-of-service-brief-en">
+                           <div class="key-terms">
+                              <p>By clicking “Agree to selected terms” I acknowledge that I have read and agree to all of the Merchant Terms of Service. Additionally, and without limiting any of Wish’s rights or my obligations in the Merchant Terms of Service, by checking each box below I agree to the corresponding term:</p>
+                              <ul class="key-terms-list">
+                                 <li class="key-term"> <input data-key-term-id="6" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants are solely responsible for conducts and activities on and relating to Wish.com, the Wish mobile app, or any other website or app provided or hosted by ContextLogic Inc. (collectively, “Wish”) and any and all data, text, information, usernames, graphics, images, photographs, profiles, audio, video, items, and links (together, "Content") that you submit, post, and display on Wish. Merchants’ Content and use of Wish shall not: be false, inaccurate or misleading, be obscene or contain pornography, nudity, or adult material; contain or transmit any code of a destructive nature that may damage, detrimentally interfere with, surreptitiously intercept or expropriate any system, data or personal information; host images that are not part of a product listing </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="7" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants shall not sell items that have been identified by the U.S. Consumer Products Safety Commission (CPSC) as hazardous to consumers and therefore subject to a recall </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="8" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants shall not be fraudulent (Fraud is the action taken by merchant to deliberately inform customers of false information or conceal the real situation to lure customers into making purchasing.) or involve the sale of illegal goods (Illegal goods refer to the commodity materials, goods (including packaging) which contain illegal content.), counterfeit (Imitation is the product’s trademark being forged or imitated or the product being adulterated without the permission of the owner of the registered trademark.) or stolen items (Stolen products refer to illegally possessing, secretly stealing or burgling public or private products) </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="9" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants’ content and use of Wish shall not: violate (or involve the sale of products that violate) any third-party's copyright, patent, trademark, trade secret or other proprietary or intellectual property rights or rights of publicity or privacy (see also, Wish's Copyright and Intellectual Property Policy); such prohibited behavior includes(without limitation): 1) selling or displaying items portraying the likeness of a celebrity (including portraits, pictures, names, signatures and autographs); 2) selling or displaying items bearing a third party brand or trademark that you are not authorized to display in such manner; or 3) selling any pirated video or recording </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="10" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants shall not solicit business for, direct sales to, or promote any website, service, or entity outside of Wish </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="11" class="key-term-check" type="checkbox"><span class="key-term-text"> Merchants shall not violate this Prohibited Items and Activities Agreement, Wish’s Merchant Policy (<a href="http://merchant.wish.com/policy/home">http://merchant.wish.com/policy/home</a>), the Terms of Service (<a href="http://merchant.wish.com/terms-of-service">http://merchant.wish.com/terms-of-service</a>) , any Wish site policy or community guidelines, or any applicable law, statute, ordinance or regulation (including, but not limited to, those governing export control, consumer protection, unfair competition, anti-discrimination or false advertising) </span> </li>
+                                 <li class="key-term"> <input data-key-term-id="12" class="key-term-check" type="checkbox"><span class="key-term-text"> Wish will delay and withhold payment payable to merchants that resulted from customer disputes and refund activities, until appropriate investigation has been concluded; Merchants shall not violate the Prohibited Items and Activities provided herein. If merchants violate any of the rules, Wish will suspend merchants’ account and withhold payments. </span> </li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="tos-footer clearfix">
+                  <input disabled="true" type="button" id="key-terms-submit" class="pull-right orange-btn" value="Agree to selected terms">
+               </div>
+            </div>
+         </div>
+         <div style="text-align: center; margin-top: 10px">
+            Having trouble?
+            <a target="_blank" class="signup_guide_link" href="{% url "index" %}hc/en-us/articles/219188967#step9">
+            Check out the signup guide
+            </a>
+         </div>
+      </div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+$(document).ready(function(){
+   $('input.key-term-check').click(function(){
+      if ($('input:checkbox:checked').length == 7){
+         $('#key-terms-submit').prop("disabled", false);
+      } else {
+         $('#key-terms-submit').prop("disabled", true);
+      }
+   });
+
+   $('#key-terms-submit').click(function(){
+      if ($('input:checkbox:checked').length == 7){
+         $.ajax({
+            type: "GET",
+            beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+            },
+            url: '/api/merchants/me/term-verify/',
+            dataType: "json",
+            success: function (data) {  
+               $(location).attr('href', '{% url "index" %}');
+            },
+            error: function(jqXHR, text, error){
+               alert('Error!');
+            }
+         });
+      }
+   });
+});
+</script>
+{% endblock %}

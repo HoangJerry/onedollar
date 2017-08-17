@@ -1,0 +1,99 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/account_settings.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+    <div id="account-settings-page">
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+                <li><a href="{% url "general_information" %}">General Information</a></li>
+                <li><a href="{% url "display_settings" %}">Display Settings</a></li>
+                <li><a href="{% url "change_username" %}">Change Username</a></li>
+                <li><a href="{% url "change_password" %}">Change Password</a></li>
+                <li class="active"><a href="{% url "change_email" %}" data-toggle="tab">Change Email</a></li>
+                <li><a href="{% url "email_preferences" %}">Email Preferences</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="change-email" class="tab-pane active">
+                <form class="form-horizontal">
+                  <div class="control-group">
+                    <label class="control-label" for="current-password-2" data-original-title="">
+                    Current Password
+                    </label>
+                    <div class="controls">
+                      <input class="input-block-level" id="current-password-2" name="password" type="password" required="">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" data-original-title="">Current Email
+                    </label>
+                    <div class="controls">
+                      <input type="text" class="input-block-level" id="lvntruong_email" disabled="">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" for="new-email" data-original-title="">New Email
+                    </label>
+                    <div class="controls">
+                      <input class="input-block-level" id="new-email" name="email" type="email" required="">
+                    </div>
+                  </div>
+                  <div class="control-group clearfix">
+                    <button type="submit" class="pull-right btn btn-primary submit-btn">
+                    Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+   function UserFromLib(user){
+      $('#lvntruong_email').val(user.email);
+   }
+
+$(document).ready(function(){
+  $(".form-horizontal").submit(function() {
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/merchants/me/change/email/',
+      data: $(".form-horizontal").serialize(),
+      dataType: "json",
+      success: function (data) {
+        if (data.status == 1){
+          location.reload();
+        } else {
+          if (data.error == "PASSWORD_NOT_MATH"){
+            alert('Current password not match!');
+          } else {
+            alert('Emaili exists!');
+          }
+        }
+      },
+      error: function(jqXHR, text, error){
+        // location.reload();
+      }
+    });      
+    return false;
+  });
+});
+</script>
+{% endblock %}

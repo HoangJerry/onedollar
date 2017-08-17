@@ -1,0 +1,589 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/home_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="main-page-content" class="row-fluid clearfix">
+  <div id="left-side-bar">
+     <div class="left-section account-manager-section">
+        <div class="section-title">Account Manager</div>
+        <div class="section-body">
+           <div class="name">Onedollar General Support</div>
+           <div class="email">admin@onedollarapp.biz</div>
+        </div>
+     </div>
+     <div class="section-title" id="tos_lvntruong" style="display: none;">Terms of Service</div>
+     <div class="left-section tos-agreed clearfix" style="display: none;">
+        <img class="pull-left" src="{% static 'merchants/images/verifiedicon.png' %}">
+        <span class="pull-left">Successfully confirmed</span>
+     </div>
+     <div class="left-section">
+        <div class="section-title">Site Map</div>
+        <ul id="site-map" class="nav nav-list">
+           <li class="nav-header">
+              Products
+              <ul class="nav nav-list">
+                 <li><a href="{% url "index" %}product">
+                    View All Products</a>
+                 </li>
+                 <li><a href="{% url "index" %}add-products">
+                    Add Manually</a>
+                 </li>
+              </ul>
+           </li>
+           <li class="nav-header">
+              Orders
+              <ul class="nav nav-list">
+                 <li><a href="{% url "order_history" %}">
+                    History</a>
+                 </li>
+              </ul>
+           </li>
+           <li class="nav-header">
+              Payments
+              <ul class="nav nav-list">
+                 <li><a href='{% url "payment_settings" %}'>
+                    Settings</a>
+                 </li>
+                 <li><a href="{% url "payment_history" %}">
+                    History</a>
+                 </li>
+              </ul>
+           </li>
+           <li class="nav-header">
+              Account
+              <ul class="nav nav-list">
+                 <li><a href='{% url "general_information" %}'>Settings</a></li>
+                 <li><a href='{% url "logout" %}'>Logout Now</a></li>
+              </ul>
+           </li>
+        </ul>
+     </div>
+  </div>
+  <div id="main-content">
+     <div class="section section_info_lvnt">
+        <div class="row-fluid">
+           <ul class="data-list clearfix">
+              <li id="new-merchant-lead-box" class="box pull-left" style="min-height:542px;">
+                 <div class="onboarding-checklist">
+                    <h3 class="title">Welcome</h3>
+<!--                     <div class="subtitle alert alert-success">   Almost there! Add your payment information to open your store!   </div> -->
+                    <div class="onboarding-checklist-container">
+                       <div class="checklist">
+                          <div class="clearfix checklist-item checklist-item-complete" data-idx="0">
+                             <div class="checklist-item-icon pull-left"> <i class="fa fa-check"></i> </div>
+                             <span class="checklist-item-text pull-left"> Add contact information </span>  <span class="checklist-item-btn pull-right"> Done </span>  
+                          </div>
+                          <div class="clearfix checklist-item checklist-item-complete" data-idx="1">
+                             <div class="checklist-item-icon pull-left"> <i class="fa fa-check"></i> </div>
+                             <span class="checklist-item-text pull-left"> Tell us more about your store </span>  <span class="checklist-item-btn pull-right"> Done </span>  
+                          </div>
+                          <div class="clearfix checklist-item" data-idx="2">
+                             <div class="checklist-item-icon pull-left"> <i class=""></i> </div>
+                             <span class="checklist-item-text pull-left"> Confirm your email address </span>    
+                          </div>
+                          <div class="clearfix checklist-item" data-idx="3">
+                             <div class="checklist-item-icon pull-left"> <i class=""></i> </div>
+                             <span class="checklist-item-text pull-left"> Confirm your phone number </span>
+                          </div>
+                          <div class="clearfix checklist-item" data-idx="4">
+                             <div class="checklist-item-icon pull-left"> <i class=""></i> </div>
+                             <span class="checklist-item-text pull-left"> Add your payment information </span>    
+                          </div>
+                          <div class="clearfix checklist-item" data-idx="5">
+                             <div class="checklist-item-icon pull-left"> <i class=""></i> </div>
+                             <span class="checklist-item-text pull-left"> Add product listings to your store </span>
+                          </div>
+                          <div class="clearfix checklist-item" data-idx="6">
+                             <div class="checklist-item-icon pull-left"> <i class=""></i> </div>
+                             <span class="checklist-item-text pull-left"> Review the terms of service </span>
+                          </div>
+                       </div>
+                    </div>
+                    <div class="onboarding-open-store-btn disabled" > Open my store </div>
+                 </div>
+              </li>
+           </ul>
+        </div>
+     </div>
+     <div class="section section-no-margin">
+        <div class="row-fluid">
+           <ul class="data-list clearfix">
+              <a class="pull-left small-box box small-box-size bd-info" href="mailto:sg_merchant_support@wish.com">
+                 <li class="vertical-middle">
+                    <div><strong>Account Manager</strong></div>
+                    <div>sg_merchant_support@wish.com</div>
+                 </li>
+              </a>
+              <a class="pull-left small-box box small-box-size new-merchant hide" href="{% url "index" %}policy/home" style="display: inline;">
+                 <li class="vertical-middle">
+                    <div><strong>Wish Merchant Policy</strong></div>
+                    <div>Review the Merchant Policy to maintain a successful account and to avoid fines and suspension.</div>
+                 </li>
+              </a>
+           </ul>
+           <div class="data-list clearfix" id="trusted-row">
+           </div>
+        </div>
+     </div>
+     <div class="section section-no-margin
+        old-merchant
+        " style="display: none;">
+        <div class="row-fluid">
+           <ul class="data-list clearfix">
+              <li class="box stack-box stack-box-big pull-left old-merchant" id="ship-worldwide" style="display: none;">
+                 <h3 class="title">Ship Worldwide</h3>
+                 <img class="pull-left big-box-image" src="{% static 'merchants/images/homepage_ship_colorful_100.png' %}">
+                 <div class="content">
+                    Wish products are shown to users all over the world.
+                    Get more sales by shipping to more countries.
+                    <div>
+                       <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/205212607-How-do-I-configure-my-shipping-settings-">
+                       Learn how to update shipping
+                       </a>
+                    </div>
+                 </div>
+                 <a class="action" href="{% url "index" %}shipping-settings">
+                 Update Shipping Settings
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+     <div id="loading-content-loader" class="row-fluid clearfix" style="display: none;">
+        <img src="{% static 'merchants/images/ajax-loader-ball.gif' %}">
+     </div>
+     <div id="loading-content" class="hide" style="display: block;">
+        <div class="section new-merchant hide" style="display: block;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <img class="pull-left title-image" src="{% static 'merchants/images/homepage_impression_120.png' %}">
+                 <div class="pull-left title-div">
+                    <h3>
+                       Get More Exposure
+                    </h3>
+                    <h4>
+                       Get more impressions by taking the following steps.
+                    </h4>
+                 </div>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="box stack-box stack-box-big pull-left">
+                    <h3 class="title">Add Products</h3>
+                    <img class="pull-left big-box-image" src="{% static 'merchants/images/homepage_add_more_products_100.png' %}">
+                    <div class="content">
+                       Your store needs exposure. Add more of your top selling products to Wish.
+                       <div>
+                          <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/204529848-How-Do-I-Add-Products-">
+                          Learn how to add products
+                          </a>
+                       </div>
+                    </div>
+                    <a class="action" href="{% url "index" %}add-products">
+                    Add Products Now
+                    </a>
+                 </li>
+                 <li class="box stack-box stack-box-big pull-left">
+                    <h3 class="title">Ship Worldwide</h3>
+                    <img class="pull-left big-box-image" src="{% static 'merchants/images/homepage_ship_worldwide_100.png' %}">
+                    <div class="content">
+                       Wish products are shown to users all over the world.
+                       Get more impressions by shipping worldwide.
+                       <div>
+                          <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/205212607-How-do-I-configure-my-shipping-settings-">
+                          Learn how to update shipping
+                          </a>
+                       </div>
+                    </div>
+                    <a class="action" href="{% url "index" %}shipping-settings">
+                    Update Shipping Settings
+                    </a>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div class="section new-merchant hide" style="display: block;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <li class="box stack-box stack-box-big pull-left">
+                    <h3 class="title">Brand University</h3>
+                    <img class="pull-left big-box-image" src="{% static 'merchants/images/underreview.png' %}">
+                    <div class="content">
+                       Learn how to avoid intellectual property infringement.
+                    </div>
+                    <a class="action" href="{% url "index" %}brand-university" target="_blank">
+                    Brand University
+                    </a>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div class="section new-merchant hide" style="display: block;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <img class="pull-left title-image" src="{% static 'merchants/images/homepage_quality_120.png' %}">
+                 <div class="pull-left title-div">
+                    <h3>
+                       Quality Products get Sales
+                    </h3>
+                    <h4>
+                       Improve your sales 20 - 50% by taking the following actions.
+                    </h4>
+                 </div>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Lower Your Prices</h3>
+                    <img class="pull-left small-box-image" src="{% static 'merchants/images/homepage_lower_price_80.png' %}">
+                    <div class="content">
+                       <div>
+                          Products with competitive prices get good exposure.
+                       </div>
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/204531268-How-do-I-increase-my-sales-">
+                    Learn how to lower prices
+                    </a>
+                 </li>
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Add Additional Images</h3>
+                    <img class="pull-left small-box-image" src="{% static 'merchants/images/homepage_images_80.png' %}">
+                    <div class="content">
+                       Provide at least five additional images for your products to boost your sales.
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/205211757-How-To-Add-More-Photos">
+                    Learn how to add images
+                    </a>
+                 </li>
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Provide Size and/or Color</h3>
+                    <img class="pull-left small-box-image" src="{% static 'merchants/images/homepage_size_color_80.png' %}">
+                    <div class="content">
+                       Wish users like options! Increase your sales by adding size or color variations to your products where appropriate.
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/204529748-How-do-I-edit-or-add-sizes-and-colors-">
+                    Learn how to add variations
+                    </a>
+                 </li>
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Search Eligibility</h3>
+                    <img class="pull-left small-box-image" src="{% static 'merchants/images/homepage_quality.png' %}">
+                    <div class="content">
+                       <div>
+                          Only top products are searchable on Wish. To be eligible, upload high quality product listings.
+                       </div>
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/217299307-Why-do-my-products-not-show-up-in-search-">
+                    Learn more about search
+                    </a>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div class="section new-merchant hide" style="display: block;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <img class="pull-left title-image" src="{% static 'merchants/images/homepage_customer_service_120.png' %}">
+                 <div class="pull-left title-div">
+                    <h3>
+                       Good Customer Service Increases Your Exposure
+                    </h3>
+                    <h4>
+                       Providing the best experience for your customers is the best way to grow your sales.
+                    </h4>
+                 </div>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Size Your Products Correctly</h3>
+                    <img class="pull-left small-box-image image-customer-service" src="{% static 'merchants/images/homepage_sizing_80.png' %}">
+                    <div class="content">
+                       <div>
+                          Ensure your products conform to Wish's sizing guidelines to improve your customer reviews and reduce refunds.
+                       </div>
+                    </div>
+                    <a class="link" target="_blank" href="https://merchant.wish.com/documentation/size-charts">
+                    Learn how to size products
+                    </a>
+                 </li>
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Ship Your Orders Quickly</h3>
+                    <img class="pull-left small-box-image image-customer-service" src="{% static 'merchants/images/homepage_ship_quickly_80.png' %}">
+                    <div class="content">
+                       The most successful merchants fulfill and ship their items within 2 days as well as experience a boost in exposure and customer reviews for their store.
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/205212657-How-can-I-improve-my-shipping-time-">
+                    Learn how to ship quickly
+                    </a>
+                 </li>
+                 <li class="box stack-box pull-left">
+                    <h3 class="title">Provide Accurate Listings</h3>
+                    <img class="pull-left small-box-image image-customer-service" src="{% static 'merchants/images/homepage_accurate_listing_80.png' %}">
+                    <div class="content">
+                       Inaccurate product listings lead to a poor customer experience, a higher refund ratio and a decrease in overall exposure for your store.
+                    </div>
+                    <a class="link" target="_blank" href="{% url "index" %}hc/en-us/articles/204531568-What-should-be-included-in-my-product-listing-in-order-to-increase-sales-">
+                    Learn what an accurate listing is
+                    </a>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div class="section old-merchant hide" style="display: none;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <li class="small-box box pull-left span6">
+                    <div class="data-pt" id="tracking-confirmed"> 0% </div>
+                    <div class="title">Valid Tracking Rate</div>
+                    <div class="title description tracking-series"></div>
+                    <i data-content="The percentage of orders confirmed shipped by the carrier." data-title="Valid Tracking Rate" class="icon-question-sign question-sign"></i>
+                 </li>
+                 <li class="small-box box pull-left span6">
+                    <div class="data-pt" id="deliver-confirmed"> 0% </div>
+                    <div class="title">Confirmed Delivery Rate</div>
+                    <div class="title description delivered-series"></div>
+                    <i data-content="Percentage of orders confirmed delivered by the carrier." data-title="Confirmed Delivery Rate" class="icon-question-sign question-sign"></i>
+                 </li>
+              </ul>
+              <ul class="data-list clearfix ship-fullfillment-avg">
+                 <li class="small-box box pull-left span6 fulfillment-avg">
+                    <div class="data-pt" id="fulfillment-avg"> 0 Hours </div>
+                    <div class="title">Your Confirmed Fulfillment Time</div>
+                    <div class="title description fulfillment-series"></div>
+                    <div class="title fulfillment-percentile description"></div>
+                    <i data-content="Average time from when the order was placed until its fulfillment is confirmed." data-title="Confirmed Fulfillment Time" class="icon-question-sign question-sign"></i>
+                 </li>
+                 <li class="small-box box pull-left span6 shiptime-avg">
+                    <div class="data-pt" id="shiptime-avg"> 0 Days </div>
+                    <div class="title">Your Time to Door</div>
+                    <div class="title description shiptime-series"></div>
+                    <div class="title shiptime-percentile description"></div>
+                    <i data-content="Average time from when orders were placed to when the shipping carrier confirmed the orders delivered." data-title="Time to Door" class="icon-question-sign question-sign"></i>
+                 </li>
+              </ul>
+              <ul class="data-list clearfix ship-fullfillment-graph">
+                 <li class="small-box box pull-left span6 fulfillment-graph">
+                    <h4> Confirmed Fulfillment Time (Hours) </h4>
+                    <i data-content="Each point on this graph is the average confirmed fulfillment time. This is the time from when the order was placed to when it was confirmed fulfilled. Merchants who actually fulfill orders quickly (not just marked shipped) will get increased exposure." data-title="Confirmed Fulfillment Time Graph" class="icon-question-sign question-sign"></i>
+                    <h6> Acceptable fulfillment time: 96 hours </h6>
+                    <div id="fulfillment-time-chart-sizing-help">
+                       <canvas id="fulfillment-graph" class="graph-container"></canvas>
+                    </div>
+                 </li>
+                 <li class="small-box box pull-left span6 shipping-graph">
+                    <h4> Time to Door (Days) </h4>
+                    <i data-content="Each data point on this graph represents the average time from when orders were placed to when the shipping carrier confirmed orders as delivered. The green line represents the acceptable time to door of 14 days." data-title="Time to Door Graph" class="icon-question-sign question-sign"></i>
+                    <h6> Acceptable time to door: 14 days </h6>
+                    <div id="shipping-time-chart-sizing-help">
+                       <canvas id="shipping-graph" class="graph-container"></canvas>
+                    </div>
+                 </li>
+              </ul>
+           </div>
+        </div>
+        <div class="section old-merchant hide" style="display: none;">
+           <div class="row-fluid">
+              <ul class="data-list clearfix">
+                 <li class="small-box box pull-left span6">
+                    <div class="total-impressions">
+                       0
+                    </div>
+                    <div class="title">Total Impressions</div>
+                 </li>
+                 <li class="small-box box pull-left span6">
+                    <div class="total-sold">
+                       0
+                    </div>
+                    <div class="title">Total Sales</div>
+                 </li>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="small-box box pull-left span6">
+                    <div class="weekly-impressions">
+                       0
+                    </div>
+                    <div class="title">Impressions in the Last 7 Days</div>
+                    <div class="title description total-series"></div>
+                 </li>
+                 <li class="small-box box pull-left span6">
+                    <div class="weekly-sales">
+                       0
+                    </div>
+                    <div class="title">Sales in the Last 7 Days</div>
+                    <div class="title description total-series"></div>
+                 </li>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="small-box box pull-left span6">
+                    <h4> Total Impressions </h4>
+                    <div id="total-impressions-chart-sizing-help">
+                       <canvas class="graph-container" id="total-impressions-chart"></canvas>
+                    </div>
+                 </li>
+                 <li class="small-box box pull-left span6">
+                    <h4> Total Sales </h4>
+                    <div id="total-sales-chart-sizing-help">
+                       <canvas class="graph-container" id="total-sales-chart"></canvas>
+                    </div>
+                 </li>
+              </ul>
+              <ul class="data-list clearfix">
+                 <li class="small-box box pull-left span6">
+                    <h4> Total Wishes </h4>
+                    <div id="total-wishes-chart-sizing-help">
+                       <canvas class="graph-container" id="total-wishes-chart"></canvas>
+                    </div>
+                 </li>
+              </ul>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+
+var sendMail = true;
+var sendMailOpenMyStore = true;
+var check_open_my_store = true;
+var merchant_status = 30;
+// URL
+var url_request_confirmation_by_phone = '{% url "request_confirmation_by_phone" %}';
+var url_payment_settings = '{% url "payment_settings" %}';
+var url_add_products = '{% url "add_products" %}';
+var url_terms_of_service = '{% url "terms_of_service" %}';
+
+function UserFromLib(user){
+  var spanDone = '<span class="checklist-item-btn pull-right"> Done </span>';
+  // Check email verify
+  if (user.is_email_verified){
+    checklistDONE(2);
+  } else {
+    check_open_my_store = false;
+    $('.checklist-item:eq(2)').append('<a class="checklist-item-btn pull-right resend-email-verify"> Resend </a>');
+    $(".resend-email-verify" ).on("click", function(event) {
+      event.preventDefault();
+      if (sendMail){
+        $.ajax({
+          type: "POST",
+          beforeSend: function(request) {
+            request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+          },
+          url: '/api/email/verify/',
+          dataType: "json",
+          success: function (data) {  
+            alert('An email has been sent to your account manager. It will take 3 to 5 days to review your store. Thank you for waiting.');
+            sendMail = false;
+          },
+          error: function(jqXHR, text, error){
+            alert('Error!');
+          }
+        });
+      } else {
+        console.log('An email has been sent to your account manager. It will take 3 to 5 days to review your store. Thank you for waiting.');
+      }
+    });
+  }
+  
+  // Check phone verify
+  if (user.is_phone_verified){
+    checklistDONE(3);
+  } else {
+    checklistNOTDONE(3, url_request_confirmation_by_phone);
+  }
+
+  // Check payment information
+  if (user.is_payment_verified){
+    checklistDONE(4);
+  } else {
+    checklistNOTDONE(4, url_payment_settings);
+  }
+
+  // Check add product
+  if (user.is_create_product){
+    checklistDONE(5);
+  } else {
+    checklistNOTDONE(5, url_add_products);
+  }
+
+  // Check term information
+  if (user.is_accept_terms_of_service){
+    checklistDONE(6);
+    $('#tos_lvntruong').css('display','block');
+    $('.tos-agreed').css('display','block');
+  } else {
+    checklistNOTDONE(6, url_terms_of_service);
+  }
+
+  function checklistDONE(index){
+    $('.checklist-item:eq('+index+')').append(spanDone);
+    $('.checklist-item:eq('+index+')').addClass('checklist-item-complete');
+    $('.checklist-item:eq('+index+') i').addClass('fa fa-check');
+  }
+
+  function checklistNOTDONE(index, url){
+    check_open_my_store = false;
+    $('.checklist-item:eq('+index+')').append('<a href="' +url+ '" class="checklist-item-btn pull-right"> Go </a>');
+  }
+}
+
+function MerchantFromLib(merchant){
+  merchant_status = merchant.status;
+  $('.onboarding-open-store-btn').addClass('disabled');
+  var truongInterval = setInterval(function(){ 
+    if((merchant.status == 30) && check_open_my_store){
+      $('.onboarding-open-store-btn').removeClass('disabled');
+      clearInterval(truongInterval);
+    };
+    if((merchant.status == 0) || (merchant.status == 40)){
+    // if(merchant.status == 0){
+      clearInterval(truongInterval);
+    };
+    if (merchant.status == 0){
+      $('.onboarding-open-store-btn').text("Your store is approved");
+      $('.onboarding-open-store-btn').removeClass('disabled').css('background-color','#5cb85!important');
+    };
+  }, 500);
+}
+
+$(document).ready(function(){
+
+$(".onboarding-open-store-btn" ).on("click", function(event) {
+  event.preventDefault();
+  if (sendMailOpenMyStore && check_open_my_store && (merchant_status == 30)){
+    $.ajax({
+      type: "GET",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/merchants/me/email/openshop/',
+      dataType: "json",
+      success: function (data) {  
+        // $('.onboarding-open-store-btn').remove();
+        alert('An email has been sent to your account manager. It will take 3 to 5 days to review your store. Thank you for waiting.​');
+      },
+      error: function(jqXHR, text, error){
+        alert('Error!');
+      }
+    });
+  } else {
+    if (merchant_status == 40){
+      alert('Server sent email. Please wait admin approve!');
+    }
+  }
+});
+
+});
+</script>
+{% endblock %}

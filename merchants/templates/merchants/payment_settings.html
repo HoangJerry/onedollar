@@ -1,0 +1,105 @@
+{% extends 'merchants/base.html' %}
+{% load staticfiles %}
+
+{% block style %}
+  <link rel="stylesheet" type="text/css" href="{% static 'merchants/css/payment_settings_page.css' %}">
+{% endblock %}
+
+{% block header_pull_right %}
+{% endblock %}
+
+{% block sub_header_nav %}
+
+{% endblock %}
+
+{% block content %}
+<div id="page-content" class="container-fluid  user">
+   <div id="payment-settings-page" class="row-fluid">
+      <span class="span6">
+         <legend>Payment Information</legend>
+         <form id="change-info-area" class="form-horizontal">
+            <div class="control-group">
+               Please choose how you would like to be paid and provide the necessary details.
+            </div>
+            <div class="control-group">
+               <label for="input-provider" class="control-label">Provider</label>
+               <div class="controls">
+                  <select class="input-block-level" id="input-provider" name="provider_payment">
+                     <option value="1">
+                        PayPal
+                     </option>
+                     <option value="2">
+                        Payoneer
+                     </option>
+                  </select>
+               </div>
+            </div>
+            <div class="control-group bill-inputs payment-inputs" style="display: block;">
+               <label for="input-bill-email" class="control-label">
+               Email
+               </label>
+               <div class="controls">
+                  <input type="email" class="input-block-level" name="email_payment" id="input-bill-email" value="" required="">
+               </div>
+            </div>
+            <div class="control-group clearfix" id="info-submit-container">
+               <button class="pull-right btn btn-primary btn-large hide" id="change-info" type="submit" style="display: inline-block;">
+               Update Payment Information
+               </button>
+               <div class="pull-right loading hide"></div>
+            </div>
+            <div id="update-result" class=""></div>
+            <div style="text-align: center; margin-top: 10px">
+               Having trouble?
+               <a target="_blank" class="signup_guide_link" href="{% url "index" %}hc/en-us/articles/219188967#step7">
+               Check out the signup guide
+               </a>
+            </div>
+         </form>
+      </span>
+   </div>
+</div>
+{% endblock %}
+
+{% block global_js %}
+<script type="text/javascript">
+   function MerchantFromLib(merchant){
+      // Show email_payment number
+      $('#input-bill-email').val(merchant.email_payment);
+
+      $("#input-provider option").each(function()
+      {
+         if($(this).val() == merchant.provider_payment){
+            $(this).prop('selected', 'selected');
+         }
+      });
+
+      if (merchant.status == 0){
+        $('#merchant-lead-open-store-banner').remove();
+      }
+   }
+
+$(document).ready(function(){
+
+  $(".form-horizontal").submit(function() {
+    $.ajax({
+      type: "POST",
+      beforeSend: function(request) {
+        request.setRequestHeader("Authorization", 'Token ' + localStorage.getItem('token'));
+      },
+      url: '/api/merchants/me/',
+      data: $(".form-horizontal").serialize(),
+      dataType: "json",
+      success: function (data) {  
+         $(location).attr('href', '{% url "index" %}');
+      },
+      error: function(jqXHR, text, error){
+        alert('Error!');
+      }
+    });      
+    return false;
+  });
+  
+});
+</script>
+{% endblock %}
