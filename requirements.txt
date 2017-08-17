@@ -1,4 +1,4 @@
--e git+git://github.com/seamusmb/django-paginator-rawqueryset.git
+git+git://github.com/seamusmb/django-paginator-rawqueryset.git
 cffi==1.2.1
 chardet==2.3.0
 cryptography==1.9
