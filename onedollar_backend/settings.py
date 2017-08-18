@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'b-3qh07ezr4l2dj@&b$g%xgpaszo!9w*!d9(l-!*!s0hnwyha='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
@@ -240,6 +240,10 @@ DATABASES = {
     }
 }
 
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -334,7 +338,7 @@ WEB_CLIENT_ID = '26835176988-3n06vhhjglr58p7cola5v6rf5inbg7tn.apps.googleusercon
 
 REDISKEYS_STRIPE_ERR = 'stripe_errors'
 
-try:
-    from settings_local import *
-except ImportError as e:
-    print e
+# try:
+#     from settings_local import *
+# except ImportError as e:
+#     print e
