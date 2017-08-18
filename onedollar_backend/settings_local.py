@@ -16,7 +16,7 @@
 
 
 # # #SITE_URL = 'http://128.199.67.33/'
-# SITE_URL = 'https://dailywashbackend.herokuapp.com/'
+SITE_URL = 'https://dailywashbackend.herokuapp.com/'
 # STATIC_URL = SITE_URL + 'static/'
 MEDIA_URL = SITE_URL + 'media/'
 
