@@ -267,7 +267,7 @@ USE_L10N = True
 USE_TZ = True
 
 # SITE_URL = 'http://localhost:8888/'
-SITE_URL = 'http://onedollar.giinger.com/'
+SITE_URL = 'https://dailywashbackend.herokuapp.com/'
 
 STATIC_URL = SITE_URL + 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
