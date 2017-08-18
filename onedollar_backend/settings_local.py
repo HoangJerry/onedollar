@@ -21,6 +21,15 @@ STATIC_URL = SITE_URL + 'static/'
 MEDIA_URL = SITE_URL + 'media/'
 
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
